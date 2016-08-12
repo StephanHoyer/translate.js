@@ -109,20 +109,23 @@
       return result
     }
 
-    var tFunc = function (translationKey, count, replacements) {
+    var tFunc = function (translationKey, arg1, arg2) {
       var translation = tFunc.keys[translationKey]
-      var complex = count != null || replacements != null
+      var complex = arg1 != null || arg2 != null
+      var count, replacements, subkey
 
       if (complex) {
-        if (isObject(count)) {
-          var tmp = replacements
-          replacements = count
-          count = tmp
-        }
+        count = isObject(arg1) ? arg2 : arg1
+        replacements = isObject(arg1) ? arg1 : arg2
+        subkey = typeof count === 'string' && count
+        count = typeof count === 'number' && count
         replacements = replacements || {}
-        count = typeof count === 'number' ? count : null
 
-        if (count !== null && isObject(translation)) {
+        if (subkey && isObject(translation)) {
+          translation = translation[subkey]
+        }
+
+        if (count !== false && isObject(translation)) {
           // get appropriate plural translation string
           translation = getPluralValue(translation, count)
         }
@@ -131,8 +134,13 @@
       if (typeof translation !== 'string') {
         translation = translationKey
         if (debug) {
-          translation = '@@' + translation + '@@'
-          console.warn('Translation for "' + translationKey + '" not found.')
+          if (subkey) {
+            translation = '@@' + translationKey + '.' + subkey + '@@'
+            console.warn(['Translation for ', translationKey, ' with subkey ', subkey, ' not found.'].join('"'))
+          } else {
+            translation = '@@' + translation + '@@'
+            console.warn('Translation for "' + translationKey + '" not found.')
+          }
         }
       } else if (complex || debug) {
         translation = replacePlaceholders(translation, replacements, count)
