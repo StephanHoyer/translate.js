@@ -38,12 +38,16 @@ describe('translate.js', function() {
       10: '{day}. October {year}',
       11: '{day}. November {year}',
       12: '{day}. December {year}',
+
+      __: 'WAT! {n}!?',
+      n: 'Is always overridden by __',
     },
 
     'Prosa Key': 'This is prosa!',
 
     comboCounter: '{name} is {n} years old.',
     translationWithSubkeys: { foo: 'FOO' },
+    translationWithDefaultSubkey: { __: 'I am a default value' },
   }
 
   var t = translate(translationsObject)
@@ -193,6 +197,14 @@ describe('translate.js', function() {
       'I like this.'
     )
   })
+  it('should return the "__" subkey value if no subkey is passed', function () {
+    expect(t3b('translationWithDefaultSubkey')).to.equal('I am a default value')
+  })
+  it('should retry the "__" subkey value if passed subkey is missing', function () {
+    expect(t3b('translationWithDefaultSubkey', 'nonexistentsubkey') ).to.equal('I am a default value')
+    expect(t3b('date', 13, {day: '13', year: 2013}) ).to.equal('WAT! 13!?')
+  })
+
 
   // wrong arguments
   var t4 = translate(translationsObject, 'asd')
@@ -310,6 +322,8 @@ describe('translate.js', function() {
   })
 })
 
+
+
 describe('Return array option', function() {
   it('should return replacement-token translations as Arrays, when t.arr() is called', function() {
     var t = translate({
@@ -345,6 +359,8 @@ describe('Return array option', function() {
     expect(t.arr('test3', 'subkey')).to.eql('simple')
   })
 })
+
+
 
 describe('alias usage', function() {
   it('should work with simple translations', function() {

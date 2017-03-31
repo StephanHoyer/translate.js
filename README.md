@@ -61,7 +61,7 @@ var messages = {
         1: '{n} Hit',
         2: '{n} Hitse',  //some slavic langs have multiple plural forms
         3: '{n} Hitses', //some slavic langs have multiple plural forms
-        n: '{n} Hits', // default
+        n: '{n} Hits', // default for other numbers
     },
     date: {
         1: '{day}. January {year}',
@@ -80,6 +80,12 @@ var messages = {
     saveButton: {
         label: 'Save',
         tooltip: 'Save unsaved changes',
+    },
+    simpleButton: 'Simple',
+
+    hasDefaultSubkey: {
+        foo: 'Foo subkey value',
+        __: 'Default value',
     },
 
     'Prosa Key': 'This is prosa!',  
@@ -108,6 +114,16 @@ t('likeTwoThings', ['Alice', 'Bob']) => 'I like Alice and Bob!'
 //subkeys
 t('saveButton', 'label') => 'Save'
 t('saveButton', 'tooltip') => 'Save unsaved changes'
+
+//simple translations ignore subkeys
+t('simpleButton', 'label') => 'Simple'
+t('simpleButton', 'tooltip') => 'Simple'
+
+//default '__' subkey
+t('hasDefaultSubkey', 'foo') => 'Foo subkey value'
+t('hasDefaultSubkey', 'missing') => 'Default value'
+t('hasDefaultSubkey') => 'Default value'
+
 
 //numerical subkeys (count)
 t('simpleCounter', 25) => 'The count is 25'
@@ -141,6 +157,8 @@ var t2 = function () {
     return t.apply(null,arguments)
 }
 ```
+
+
 
 
 ### Pluralization

@@ -74,7 +74,8 @@ function translatejs(messageObject, options) {
 
   function tFunc(translationKey, subKey, replacements) {
     let translation = tFunc.keys[translationKey]
-    const complex = subKey != null || replacements != null
+    const translationIsObject = isObject(translation);
+    const complex = translationIsObject || subKey != null || replacements != null
 
     if (complex) {
       if (isObject(subKey)) {
@@ -84,8 +85,8 @@ function translatejs(messageObject, options) {
       }
       replacements = replacements || {}
 
-      if (subKey !== null && isObject(translation)) {
-        const propValue = translation[subKey]
+      if (translationIsObject) {
+        const propValue = (subKey != null && translation[subKey]) || translation.__
         if (propValue != null) {
           translation = propValue
         } else if (typeof subKey === 'number') {
