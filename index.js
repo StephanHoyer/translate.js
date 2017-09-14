@@ -86,7 +86,7 @@ function translatejs(messageObject, options) {
       replacements = replacements || {}
 
       if (translationIsObject) {
-        const propValue = (subKey != null && translation[subKey]) || translation.__
+        const propValue = (subKey != null && translation[subKey]) || translation['*']
         if (propValue != null) {
           translation = propValue
         } else if (typeof subKey === 'number') {

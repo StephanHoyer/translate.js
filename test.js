@@ -39,15 +39,15 @@ describe('translate.js', function() {
       11: '{day}. November {year}',
       12: '{day}. December {year}',
 
-      __: 'WAT! {n}!?',
-      n: 'Is always overridden by __',
+      '*': 'WAT! {n}!?',
+      n: 'Is always overridden by "*"',
     },
 
     'Prosa Key': 'This is prosa!',
 
     comboCounter: '{name} is {n} years old.',
     translationWithSubkeys: { foo: 'FOO' },
-    translationWithDefaultSubkey: { __: 'I am a default value' },
+    translationWithDefaultSubkey: { '*': 'I am a default value' },
   }
 
   var t = translate(translationsObject)
@@ -197,10 +197,10 @@ describe('translate.js', function() {
       'I like this.'
     )
   })
-  it('should return the "__" subkey value if no subkey is passed', function () {
+  it('should return the "*" subkey value if no subkey is passed', function () {
     expect(t3b('translationWithDefaultSubkey')).to.equal('I am a default value')
   })
-  it('should retry the "__" subkey value if passed subkey is missing', function () {
+  it('should retry the "*" subkey value if passed subkey is missing', function () {
     expect(t3b('translationWithDefaultSubkey', 'nonexistentsubkey') ).to.equal('I am a default value')
     expect(t3b('date', 13, {day: '13', year: 2013}) ).to.equal('WAT! 13!?')
   })
