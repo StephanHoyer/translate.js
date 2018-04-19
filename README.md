@@ -20,7 +20,8 @@ Usage:
 ------
 
 ```JavaScript
-var translate = require('translate.js')
+import translate from 'translate.js'
+// var translate = require('translate.js')
 
 var messages = {
     translationKey: 'Translation value'
@@ -88,7 +89,8 @@ var messages = {
 
 Then bind the translation function to something short:
 ```JavaScript
-var translate = require('translate.js')
+import translate from 'translate.js'
+// var translate = require('translate.js')
 var t = translate(messages)
 ```
 

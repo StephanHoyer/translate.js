@@ -1,7 +1,7 @@
 'use strict'
 
 /* global require, describe, it */
-var translate = require('./index')
+var translate = require('./dist/index')
 var expect = require('expect.js')
 
 describe('translate.js', function () {
