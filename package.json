@@ -1,6 +1,6 @@
 {
   "name": "translate.js",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Javascript micro library for translations (i18n) with support for placeholders and multiple plural forms.",
   "devDependencies": {
     "benchmark": "^2.0.0",
