@@ -64,6 +64,10 @@ describe('translate.js', function () {
     expect(t('like', {thing: 'Sun'})).to.equal('I like Sun!')
   })
 
+  it('should return a not-translated string and replace a placeholder ', function () {
+    expect(t('This {thing} not translated, yet', {thing: 'string'})).to.equal('This string not translated, yet')
+  })
+
   it('should return a translated string and show missing placeholders', function () {
     expect(t('like')).to.equal('I like {thing}!')
   })
