@@ -1,39 +1,6 @@
-/**
- * Microlib for translations with support for placeholders and multiple plural forms.
- *
- *
- * Usage:
- *
- * const translate = require('translate.js')
- *
- * const messages = {
- *  translationKey: 'translationValue'
- * }
- *
- * const options = {
- *   // These are the defaults:
- *   debug: false,  //[Boolean]: Logs missing translations to console and add "@@" around output if `true`.
- *   array: false,  //[Boolean]: `true` returns translations with placeholder-replacements as Arrays.
- *   pluralize: (n,translKey) => Math.abs(n); //[Function(count,translationKey)]: Provides a custom pluralization mapping function.
- * }
- *
- * const t = translate(messages, [options])
- *
- * t('translationKey')
- * t('translationKey', count)
- * t('translationKey', {replaceKey: 'replacevalue'})
- * t('translationKey', count, {replaceKey: 'replacevalue'})
- * t('translationKey', {replaceKey: 'replacevalue'}, count)
- *
- *
- * @author Jonas Girnatis <dermusterknabe@gmail.com>
- * @licence May be freely distributed under the MIT license.
- */
+const isObject = obj => obj && typeof obj === 'object'
 
-const isObject = (obj) => obj && typeof obj === 'object'
-
-
-function assemble (parts, replacements, count, debug, asArray) {
+function assemble(parts, replacements, count, debug, asArray) {
   let result = asArray ? parts.slice() : parts[0]
   const len = parts.length
   for (let i = 1; i < len; i += 2) {
@@ -43,7 +10,8 @@ function assemble (parts, replacements, count, debug, asArray) {
       if (part === 'n' && count != null) {
         val = count
       } else {
-        debug && console.warn('No "' + part + '" in placeholder object:', replacements)
+        debug &&
+          console.warn('No "' + part + '" in placeholder object:', replacements)
         val = '{' + part + '}'
       }
     }
@@ -56,14 +24,14 @@ function assemble (parts, replacements, count, debug, asArray) {
   return result
 }
 
-function translatejs (messageObject, options) {
+function translatejs(messageObject, options) {
   options = options || {}
   if (options.resolveAliases) {
     messageObject = translatejs.resolveAliases(messageObject)
   }
   const debug = options.debug
 
-  function getPluralValue (translation, count) {
+  function getPluralValue(translation, count) {
     // Opinionated assumption: Pluralization rules are the same for negative and positive values.
     // By normalizing all values to positive, pluralization functions become simpler, and less error-prone by accident.
     let mappedCount = Math.abs(count)
@@ -80,7 +48,7 @@ function translatejs (messageObject, options) {
 
   const replCache = {}
 
-  function replacePlaceholders (translation, replacements, count) {
+  function replacePlaceholders(translation, replacements, count) {
     let result = replCache[translation]
     if (result == null) {
       const parts = translation
@@ -98,11 +66,13 @@ function translatejs (messageObject, options) {
       result = parts.length > 1 ? parts : parts[0]
       replCache[translation] = result
     }
-    result = result.pop ? assemble(result, replacements, count, debug, tFunc.opts.array) : result
+    result = result.pop
+      ? assemble(result, replacements, count, debug, tFunc.opts.array)
+      : result
     return result
   }
 
-  function tFunc (translationKey, subKey, replacements) {
+  function tFunc(translationKey, subKey, replacements) {
     let translation = tFunc.keys[translationKey]
     const complex = subKey != null || replacements != null
 
@@ -130,7 +100,12 @@ function translatejs (messageObject, options) {
       if (debug) {
         if (subKey != null) {
           translation = '@@' + translationKey + '.' + subKey + '@@'
-          console.warn('No translation or pluralization form found for "' + subKey + '" in' + translationKey)
+          console.warn(
+            'No translation or pluralization form found for "' +
+              subKey +
+              '" in' +
+              translationKey
+          )
         } else {
           translation = '@@' + translation + '@@'
           console.warn('Translation for "' + translationKey + '" not found.')
@@ -145,7 +120,7 @@ function translatejs (messageObject, options) {
   }
 
   // Convenience function.
-  tFunc.arr = function arr (...args) {
+  tFunc.arr = function arr(...args) {
     const opts = tFunc.opts
     const normalArrayOption = opts.array
     opts.array = true
@@ -160,16 +135,16 @@ function translatejs (messageObject, options) {
   return tFunc
 }
 
-function mapValues (obj, fn) {
+function mapValues(obj, fn) {
   return Object.keys(obj).reduce((res, key) => {
     res[key] = fn(obj[key], key)
     return res
   }, {})
 }
 
-translatejs.resolveAliases = function resolveAliases (translations) {
-  const keysInProcess = {};
-  function resolveAliases (translation) {
+translatejs.resolveAliases = function resolveAliases(translations) {
+  const keysInProcess = {}
+  function resolveAliases(translation) {
     if (isObject(translation)) {
       return mapValues(translation, resolveAliases)
     }
@@ -180,17 +155,17 @@ translatejs.resolveAliases = function resolveAliases (translations) {
       keysInProcess[token] = true
       let key = token
       let subKey = ''
-      const keyParts = token.match(/^(.+)\[(.+)\]$/);
-      if ( keyParts ) {
-        key = keyParts[1];
-        subKey = keyParts[2];
+      const keyParts = token.match(/^(.+)\[(.+)\]$/)
+      if (keyParts) {
+        key = keyParts[1]
+        subKey = keyParts[2]
       }
-      let target = translations[key];
+      let target = translations[key]
       if (isObject(target)) {
-        if ( subKey ) {
+        if (subKey) {
           target = target[subKey]
         } else {
-          throw new Error('You can\'t alias objects')
+          throw new Error("You can't alias objects")
         }
       }
       if (target == null) {
@@ -204,4 +179,4 @@ translatejs.resolveAliases = function resolveAliases (translations) {
   return resolveAliases(translations)
 }
 
-export default translatejs;
+export default translatejs

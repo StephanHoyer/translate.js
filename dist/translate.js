@@ -4,42 +4,9 @@
   (global.translatejs = factory());
 }(this, (function () { 'use strict';
 
-  /**
-   * Microlib for translations with support for placeholders and multiple plural forms.
-   *
-   *
-   * Usage:
-   *
-   * const translate = require('translate.js')
-   *
-   * const messages = {
-   *  translationKey: 'translationValue'
-   * }
-   *
-   * const options = {
-   *   // These are the defaults:
-   *   debug: false,  //[Boolean]: Logs missing translations to console and add "@@" around output if `true`.
-   *   array: false,  //[Boolean]: `true` returns translations with placeholder-replacements as Arrays.
-   *   pluralize: (n,translKey) => Math.abs(n); //[Function(count,translationKey)]: Provides a custom pluralization mapping function.
-   * }
-   *
-   * const t = translate(messages, [options])
-   *
-   * t('translationKey')
-   * t('translationKey', count)
-   * t('translationKey', {replaceKey: 'replacevalue'})
-   * t('translationKey', count, {replaceKey: 'replacevalue'})
-   * t('translationKey', {replaceKey: 'replacevalue'}, count)
-   *
-   *
-   * @author Jonas Girnatis <dermusterknabe@gmail.com>
-   * @licence May be freely distributed under the MIT license.
-   */
-
   var isObject = function (obj) { return obj && typeof obj === 'object'; };
 
-
-  function assemble (parts, replacements, count, debug, asArray) {
+  function assemble(parts, replacements, count, debug, asArray) {
     var result = asArray ? parts.slice() : parts[0];
     var len = parts.length;
     for (var i = 1; i < len; i += 2) {
@@ -49,7 +16,8 @@
         if (part === 'n' && count != null) {
           val = count;
         } else {
-          debug && console.warn('No "' + part + '" in placeholder object:', replacements);
+          debug &&
+            console.warn('No "' + part + '" in placeholder object:', replacements);
           val = '{' + part + '}';
         }
       }
@@ -62,14 +30,14 @@
     return result
   }
 
-  function translatejs (messageObject, options) {
+  function translatejs(messageObject, options) {
     options = options || {};
     if (options.resolveAliases) {
       messageObject = translatejs.resolveAliases(messageObject);
     }
     var debug = options.debug;
 
-    function getPluralValue (translation, count) {
+    function getPluralValue(translation, count) {
       // Opinionated assumption: Pluralization rules are the same for negative and positive values.
       // By normalizing all values to positive, pluralization functions become simpler, and less error-prone by accident.
       var mappedCount = Math.abs(count);
@@ -86,7 +54,7 @@
 
     var replCache = {};
 
-    function replacePlaceholders (translation, replacements, count) {
+    function replacePlaceholders(translation, replacements, count) {
       var result = replCache[translation];
       if (result == null) {
         var parts = translation
@@ -104,11 +72,13 @@
         result = parts.length > 1 ? parts : parts[0];
         replCache[translation] = result;
       }
-      result = result.pop ? assemble(result, replacements, count, debug, tFunc.opts.array) : result;
+      result = result.pop
+        ? assemble(result, replacements, count, debug, tFunc.opts.array)
+        : result;
       return result
     }
 
-    function tFunc (translationKey, subKey, replacements) {
+    function tFunc(translationKey, subKey, replacements) {
       var translation = tFunc.keys[translationKey];
       var complex = subKey != null || replacements != null;
 
@@ -136,7 +106,12 @@
         if (debug) {
           if (subKey != null) {
             translation = '@@' + translationKey + '.' + subKey + '@@';
-            console.warn('No translation or pluralization form found for "' + subKey + '" in' + translationKey);
+            console.warn(
+              'No translation or pluralization form found for "' +
+                subKey +
+                '" in' +
+                translationKey
+            );
           } else {
             translation = '@@' + translation + '@@';
             console.warn('Translation for "' + translationKey + '" not found.');
@@ -151,7 +126,7 @@
     }
 
     // Convenience function.
-    tFunc.arr = function arr () {
+    tFunc.arr = function arr() {
       var args = [], len = arguments.length;
       while ( len-- ) args[ len ] = arguments[ len ];
 
@@ -169,16 +144,16 @@
     return tFunc
   }
 
-  function mapValues (obj, fn) {
+  function mapValues(obj, fn) {
     return Object.keys(obj).reduce(function (res, key) {
       res[key] = fn(obj[key], key);
       return res
     }, {})
   }
 
-  translatejs.resolveAliases = function resolveAliases (translations) {
+  translatejs.resolveAliases = function resolveAliases(translations) {
     var keysInProcess = {};
-    function resolveAliases (translation) {
+    function resolveAliases(translation) {
       if (isObject(translation)) {
         return mapValues(translation, resolveAliases)
       }
@@ -190,16 +165,16 @@
         var key = token;
         var subKey = '';
         var keyParts = token.match(/^(.+)\[(.+)\]$/);
-        if ( keyParts ) {
+        if (keyParts) {
           key = keyParts[1];
           subKey = keyParts[2];
         }
         var target = translations[key];
         if (isObject(target)) {
-          if ( subKey ) {
+          if (subKey) {
             target = target[subKey];
           } else {
-            throw new Error('You can\'t alias objects')
+            throw new Error("You can't alias objects")
           }
         }
         if (target == null) {

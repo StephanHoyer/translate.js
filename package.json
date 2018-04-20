@@ -7,15 +7,15 @@
     "expect.js": "0.3.1",
     "mocha": "5.1.1",
     "onchange": "3.3.0",
+    "prettier": "1.12.1",
     "rollup": "0.58.1",
     "rollup-plugin-buble": "0.19.2"
   },
   "scripts": {
-    "build:cjs": "rollup -c --o dist/common.js -f cjs",
-    "build:browser": "rollup -c --o dist/umd.js -f umd --name \"translatejs\"",
-    "build": "rm -rf dist/* && npm run build:cjs && npm run build:browser",
+    "build": "rm -rf dist/* && rollup -c --o dist/translate.js -f umd --name \"translatejs\"",
     "_test": "node_modules/mocha/bin/mocha test.js",
-    "test": "npm run build:cjs && npm run _test",
+    "test": "npm run format && npm run build && npm run _test",
+    "format": "prettier *.js pluralize/*.js --write",
     "dev": "onchange \"./index.js\" -- npm run test"
   },
   "repository": {
@@ -36,8 +36,7 @@
     "email": "dermusterknabe@gmail.com"
   },
   "module": "index.js",
-  "main": "dist/common.js",
-  "browser": "dist/umd.js",
+  "main": "dist/translate.js",
   "contributors": [
     {
       "name": "Stephan Hoyer",
