@@ -4,14 +4,14 @@
   (global.translatejs = factory());
 }(this, (function () { 'use strict';
 
-  var isObject = function (obj) { return obj && typeof obj === 'object'; };
+  const isObject = obj => obj && typeof obj === 'object';
 
   function assemble(parts, replacements, count, debug, asArray) {
-    var result = asArray ? parts.slice() : parts[0];
-    var len = parts.length;
-    for (var i = 1; i < len; i += 2) {
-      var part = parts[i];
-      var val = replacements[part];
+    let result = asArray ? parts.slice() : parts[0];
+    const len = parts.length;
+    for (let i = 1; i < len; i += 2) {
+      const part = parts[i];
+      let val = replacements[part];
       if (val == null) {
         if (part === 'n' && count != null) {
           val = count;
@@ -35,14 +35,14 @@
     if (options.resolveAliases) {
       messageObject = translatejs.resolveAliases(messageObject);
     }
-    var debug = options.debug;
+    const debug = options.debug;
 
     function getPluralValue(translation, count) {
       // Opinionated assumption: Pluralization rules are the same for negative and positive values.
       // By normalizing all values to positive, pluralization functions become simpler, and less error-prone by accident.
-      var mappedCount = Math.abs(count);
+      let mappedCount = Math.abs(count);
 
-      var plFunc = (tFunc.opts || {}).pluralize;
+      const plFunc = (tFunc.opts || {}).pluralize;
       mappedCount = plFunc ? plFunc(mappedCount, translation) : mappedCount;
       if (translation[mappedCount] != null) {
         return translation[mappedCount]
@@ -52,12 +52,12 @@
       }
     }
 
-    var replCache = {};
+    const replCache = {};
 
     function replacePlaceholders(translation, replacements, count) {
-      var result = replCache[translation];
+      let result = replCache[translation];
       if (result == null) {
-        var parts = translation
+        const parts = translation
           // turn both curly braces around tokens into the a unified
           // (and now unique/safe) token `{x}` signifying boundry between
           // replacement variables and static text.
@@ -79,19 +79,19 @@
     }
 
     function tFunc(translationKey, subKey, replacements) {
-      var translation = tFunc.keys[translationKey];
-      var complex = subKey != null || replacements != null;
+      let translation = tFunc.keys[translationKey];
+      const complex = subKey != null || replacements != null;
 
       if (complex) {
         if (isObject(subKey)) {
-          var tmp = replacements;
+          const tmp = replacements;
           replacements = subKey;
           subKey = tmp;
         }
         replacements = replacements || {};
 
         if (subKey !== null && isObject(translation)) {
-          var propValue = translation[subKey];
+          const propValue = translation[subKey];
           if (propValue != null) {
             translation = propValue;
           } else if (typeof subKey === 'number') {
@@ -126,14 +126,11 @@
     }
 
     // Convenience function.
-    tFunc.arr = function arr() {
-      var args = [], len = arguments.length;
-      while ( len-- ) args[ len ] = arguments[ len ];
-
-      var opts = tFunc.opts;
-      var normalArrayOption = opts.array;
+    tFunc.arr = function arr(...args) {
+      const opts = tFunc.opts;
+      const normalArrayOption = opts.array;
       opts.array = true;
-      var result = tFunc.apply(null, args);
+      const result = tFunc.apply(null, args);
       opts.array = normalArrayOption;
       return result
     };
@@ -145,31 +142,31 @@
   }
 
   function mapValues(obj, fn) {
-    return Object.keys(obj).reduce(function (res, key) {
+    return Object.keys(obj).reduce((res, key) => {
       res[key] = fn(obj[key], key);
       return res
     }, {})
   }
 
   translatejs.resolveAliases = function resolveAliases(translations) {
-    var keysInProcess = {};
+    const keysInProcess = {};
     function resolveAliases(translation) {
       if (isObject(translation)) {
         return mapValues(translation, resolveAliases)
       }
-      return translation.replace(/{{(.*?)}}/g, function (_, token) {
+      return translation.replace(/{{(.*?)}}/g, (_, token) => {
         if (keysInProcess[token]) {
           throw new Error('Circular reference for "' + token + '" detected')
         }
         keysInProcess[token] = true;
-        var key = token;
-        var subKey = '';
-        var keyParts = token.match(/^(.+)\[(.+)\]$/);
+        let key = token;
+        let subKey = '';
+        const keyParts = token.match(/^(.+)\[(.+)\]$/);
         if (keyParts) {
           key = keyParts[1];
           subKey = keyParts[2];
         }
-        var target = translations[key];
+        let target = translations[key];
         if (isObject(target)) {
           if (subKey) {
             target = target[subKey];
@@ -180,7 +177,7 @@
         if (target == null) {
           throw new Error('No translation for alias "' + token + '"')
         }
-        var translation = resolveAliases(target);
+        const translation = resolveAliases(target);
         keysInProcess[token] = false;
         return translation
       })
