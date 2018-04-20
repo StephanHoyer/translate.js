@@ -11,9 +11,9 @@
     "rollup-plugin-buble": "0.19.2"
   },
   "scripts": {
-    "build:cjs": "rollup -c --o dist/index.js -f cjs",
-    "build:browser": "rollup -c --o dist/translate.js -f umd --name \"translatejs\"",
-    "build": "npm run build:cjs && npm run build:browser",
+    "build:cjs": "rollup -c --o dist/common.js -f cjs",
+    "build:browser": "rollup -c --o dist/umd.js -f umd --name \"translatejs\"",
+    "build": "rm -rf dist/* && npm run build:cjs && npm run build:browser",
     "_test": "node_modules/mocha/bin/mocha test.js",
     "test": "npm run build:cjs && npm run _test",
     "dev": "onchange \"./index.js\" -- npm run test"
@@ -36,8 +36,8 @@
     "email": "dermusterknabe@gmail.com"
   },
   "module": "index.js",
-  "main": "dist/index.js",
-  "browser": "dist/translate.js",
+  "main": "dist/common.js",
+  "browser": "dist/umd.js",
   "contributors": [
     {
       "name": "Stephan Hoyer",
