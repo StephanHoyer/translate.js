@@ -1,4 +1,4 @@
-const isObject = obj => obj && typeof obj === 'object'
+const isObject = (obj) => obj && typeof obj === 'object'
 
 function assemble(parts, replacements, count, debug, asArray) {
   let result = asArray ? parts.slice() : parts[0]
