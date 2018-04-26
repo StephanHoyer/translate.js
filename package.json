@@ -3,12 +3,20 @@
   "version": "0.7.1",
   "description": "Javascript micro library for translations (i18n) with support for placeholders and multiple plural forms.",
   "devDependencies": {
-    "benchmark": "^2.0.0",
-    "expect.js": "^0.3.1",
-    "mocha": "^5.0.0"
+    "benchmark": "2.1.4",
+    "expect.js": "0.3.1",
+    "mocha": "5.1.1",
+    "onchange": "3.3.0",
+    "prettier": "1.12.1",
+    "rollup": "0.58.1"
   },
   "scripts": {
-    "test": "node_modules/mocha/bin/mocha test.js"
+    "prepublish": "npm run build",
+    "build": "rollup --i index.js --o common.js -f cjs",
+    "_test": "node_modules/mocha/bin/mocha test.js",
+    "test": "npm run format && npm run build && npm run _test",
+    "format": "prettier *.js pluralize/*.js --write",
+    "dev": "onchange \"./index.js\" -- npm run test"
   },
   "repository": {
     "type": "git",
@@ -27,6 +35,8 @@
     "name": "Jonas Girnatis",
     "email": "dermusterknabe@gmail.com"
   },
+  "module": "index.js",
+  "main": "common.js",
   "contributors": [
     {
       "name": "Stephan Hoyer",
@@ -39,7 +49,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/musterknabe/translate.js/issues"
+    "url": "https://github.com/StephanHoyer/translate.js/issues"
   },
-  "homepage": "https://github.com/musterknabe/translate.js"
+  "homepage": "https://github.com/StephanHoyer/translate.js"
 }

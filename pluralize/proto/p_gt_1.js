@@ -1,3 +1,3 @@
-module.exports = function (n) {
+module.exports = function(n) {
   return n > 1 ? 'p' : 's'
 }

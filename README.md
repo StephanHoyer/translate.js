@@ -20,7 +20,8 @@ Usage:
 ------
 
 ```JavaScript
-var translate = require('translate.js')
+import translate from 'translate.js'
+// var translate = require('translate.js')
 
 var messages = {
     translationKey: 'Translation value'
@@ -88,7 +89,8 @@ var messages = {
 
 Then bind the translation function to something short:
 ```JavaScript
-var translate = require('translate.js')
+import translate from 'translate.js'
+// var translate = require('translate.js')
 var t = translate(messages)
 ```
 
@@ -174,12 +176,13 @@ t('sheep', 21) => '21 kind'  // pluralize_IS(21) => 's'
 t('sheep', 13) => 'Baaahd luck'  // direct subkey hit 
 ```
 
-Translate.js comes with a predefined `pluralize` functions for [several languages](pluralize/). These can be required into your code as needed, like so:
+Translate.js comes with a predefined `pluralize` functions for [several languages](plurals.js). These can be imported into your code as needed, like so:
 
 ```js
-var pluralize_IS = require('translate.js/pluralize/is')
+import { plural_IS } from 'translate.js/plurals'
+// var plural_IS = require('translate.js/pluralize/is')
 var t = translate( messages_IS, {
-    pluralize: pluralize_IS
+    pluralize: plural_IS
 })
 ```
 
