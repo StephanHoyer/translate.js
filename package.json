@@ -11,7 +11,8 @@
     "rollup": "0.58.1"
   },
   "scripts": {
-    "build": "rm -rf dist/* && rollup -c --o dist/translate.js -f umd --name \"translatejs\"",
+    "prepublish": "npm run build",
+    "build": "rollup --i index.js --o common.js -f cjs",
     "_test": "node_modules/mocha/bin/mocha test.js",
     "test": "npm run format && npm run build && npm run _test",
     "format": "prettier *.js pluralize/*.js --write",
@@ -35,7 +36,7 @@
     "email": "dermusterknabe@gmail.com"
   },
   "module": "index.js",
-  "main": "dist/translate.js",
+  "main": "common.js",
   "contributors": [
     {
       "name": "Stephan Hoyer",
