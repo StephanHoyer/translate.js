@@ -1,7 +1,7 @@
 # Change Log for Translate.js
 
 
-## Unreleased
+## Upcoming...
 * feat: Support default/"wild-card" `*` subkeys as fallback for missing subkey translations ([#37](https://github.com/StephanHoyer/translate.js/pull/37))
 
 
