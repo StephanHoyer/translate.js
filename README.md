@@ -299,6 +299,3 @@ t('test', {
 // results in ['abc ', { tag: 'img', ... }, ' def']
 ```
 
-## Namespace-Support
-
-Namespace support was dropped in version 0.3.0. If you need it, use [version 0.2.2](https://github.com/StephanHoyer/translate.js/tree/v0.2.2).
