@@ -2,6 +2,13 @@
 
 
 ## Upcoming...
+<!-- Add features here -->
+* ...
+
+
+
+## 1.1.0
+_2018-05-04_
 * feat: Support default/"wild-card" `*` subkeys as fallback for missing subkey translations ([#37](https://github.com/StephanHoyer/translate.js/pull/37))
 
 
