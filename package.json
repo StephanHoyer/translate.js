@@ -8,7 +8,7 @@
     "mocha": "5.1.1",
     "onchange": "3.3.0",
     "prettier": "1.12.1",
-    "rollup": "0.58.1"
+    "rollup": "0.58.2"
   },
   "scripts": {
     "prepublish": "npm run build",
@@ -16,7 +16,7 @@
     "_test": "node_modules/mocha/bin/mocha test.js",
     "test": "npm run format && npm run build && npm run _test",
     "format": "prettier *.js pluralize/*.js --write",
-    "dev": "onchange \"./index.js\" -- npm run test"
+    "dev": "onchange './index.js' -- npm run test"
   },
   "repository": {
     "type": "git",
