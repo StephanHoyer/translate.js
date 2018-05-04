@@ -259,7 +259,7 @@ describe('translate.js', () => {
       n: 'Default',
     },
   }
-  const tX
+  let tX
 
   it('should gracefully handle no parameters', () => {
     tX = translate()
