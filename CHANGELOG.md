@@ -73,7 +73,7 @@ _2015-12-18_
 
 ## 0.2.3
 _2015-12-18_
-* [BREAKING] Drop support for "namespaced" translation keys ([#15](https://github.com/StephanHoyer/translate.js/pull/15))
+* chore: Badges!
 
 
 
