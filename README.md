@@ -103,37 +103,37 @@ var t = translate(messages)
 And use it like this:
 ```JavaScript
 //simple
-t('like') => 'I like this.'
-t('Prosa Key') => 'This is prosa!'
+t('like') === 'I like this.'
+t('Prosa Key') === 'This is prosa!'
 
 //placeholders - named
-t('likeThing', {thing: 'the Sun'}) => 'I like the Sun!'
+t('likeThing', {thing: 'the Sun'}) === 'I like the Sun!'
 //placeholders - array
-t('likeTwoThings', ['Alice', 'Bob']) => 'I like Alice and Bob!'
+t('likeTwoThings', ['Alice', 'Bob']) === 'I like Alice and Bob!'
 
 //subkeys
-t('saveButton', 'label') => 'Save'
-t('saveButton', 'tooltip') => 'Save unsaved changes'
+t('saveButton', 'label') === 'Save'
+t('saveButton', 'tooltip') === 'Save unsaved changes'
 
 //simple translations ignore subkeys
-t('simpleButton', 'label') => 'Simple'
-t('simpleButton', 'tooltip') => 'Simple'
+t('simpleButton', 'label') === 'Simple'
+t('simpleButton', 'tooltip') === 'Simple'
 
 //default '*' subkey
-t('hasDefaultSubkey', 'foo') => 'Foo subkey value'
-t('hasDefaultSubkey', 'missing') => 'Default value'
-t('hasDefaultSubkey') => 'Default value'
+t('hasDefaultSubkey', 'foo') === 'Foo subkey value'
+t('hasDefaultSubkey', 'missing') === 'Default value'
+t('hasDefaultSubkey') === 'Default value'
 
 
 //numerical subkeys (count)
-t('simpleCounter', 25) => 'The count is 25'
-t('hits', 0) => 'No Hits'
-t('hits', 1) => '1 Hit'
-t('hits', 3) => '3 Hitses'
-t('hits', 99) => '99 Hits'
+t('simpleCounter', 25) === 'The count is 25'
+t('hits', 0) === 'No Hits'
+t('hits', 1) === '1 Hit'
+t('hits', 3) === '3 Hitses'
+t('hits', 99) === '99 Hits'
 
 //combined count/subkey and placeholders
-t('date', 2, {day: '13', year: 2014}) => '13. February 2014'
+t('date', 2, {day: '13', year: 2014}) === '13. February 2014'
 ```
 
 It is flexible, so you can add/replace translations after the fact by modifying the `.keys` property, like so:
@@ -141,13 +141,13 @@ It is flexible, so you can add/replace translations after the fact by modifying 
 ```js
 //add/update keys
 t.keys['add-key'] = 'Sorry I am late!'
-t('add-key') => 'Sorry I am late!'
+t('add-key') === 'Sorry I am late!'
 
 //replace keys object
 t.keys = { 'new-key': 'All is new!' }
-t('new-key') => 'All is new!'
-t('add-key') => 'add-key' // (No longer translated)
-t('like') => 'like'       // (No longer translated)
+t('new-key') === 'All is new!'
+t('add-key') === 'add-key' // (No longer translated)
+t('like') === 'like'       // (No longer translated)
 ```
 
 Immutability can be achieved with a simple wrapper:
@@ -187,11 +187,11 @@ With this setup, all failed numerical subkey lookups get passed through the plur
 is then used as a subkey, like so.
 
 ```js
-t('sheep', 0) => 'Engar kindur' // direct subkey hit takes precedence
-t('sheep', 1) => '1 kind'  // pluralize_IS(1) => 's' 
-t('sheep', 2) => '2 kindur'  // pluralize_IS(2) => 'p' 
-t('sheep', 21) => '21 kind'  // pluralize_IS(21) => 's'
-t('sheep', 13) => 'Baaahd luck'  // direct subkey hit 
+t('sheep', 0) === 'Engar kindur' // direct subkey hit takes precedence
+t('sheep', 1) === '1 kind'  // pluralize_IS(1) === 's' 
+t('sheep', 2) === '2 kindur'  // pluralize_IS(2) === 'p' 
+t('sheep', 21) === '21 kind'  // pluralize_IS(21) === 's'
+t('sheep', 13) === 'Baaahd luck'  // direct subkey hit 
 ```
 
 Translate.js comes with a predefined `pluralize` functions for [several languages](plurals.js). These can be imported into your code as needed, like so:
@@ -238,8 +238,8 @@ var messages = translate.resolveAliases({
 })
 var t = translate(messages)
 
-t('text1')   // => 'Click the "Save" button when done.'
-t('text2')   // => 'Click the "Cancel" button to exit.'
+t('text1') === 'Click the "Save" button when done.'
+t('text2') === 'Click the "Cancel" button to exit.'
 ```
 
 This also works with pluralized translations. Nothing is done automatically
@@ -258,7 +258,7 @@ var messages = translate.resolveAliases({
 })
 var t = translate(messages)
 
-t('other', 2)   // => 'other 2 things'
+t('other', 2) === 'other 2 things'
 ```
 
 **Note:** You can set an options flag to do this automatically during
