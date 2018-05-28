@@ -1,6 +1,6 @@
 {
   "name": "translate.js",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Javascript micro library for translations (i18n) with support for placeholders and multiple plural forms.",
   "devDependencies": {
     "benchmark": "2.1.4",
@@ -8,11 +8,12 @@
     "mocha": "5.1.1",
     "onchange": "3.3.0",
     "prettier": "1.12.1",
-    "rollup": "0.58.2"
+    "rollup": "0.58.2",
+    "rollup-plugin-buble": "0.19.2"
   },
   "scripts": {
     "prepublish": "npm run build",
-    "build": "rollup --i index.js --o common.js -f cjs",
+    "build": "rollup -c",
     "_test": "node_modules/mocha/bin/mocha test.js",
     "test": "npm run format && npm run build && npm run _test",
     "format": "prettier *.js pluralize/*.js --write",
