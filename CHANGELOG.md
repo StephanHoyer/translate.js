@@ -15,9 +15,9 @@ _2018-05-04_
 
 ## 1.0.0
 _2018-04-26_
-* feat: Convert the module to ES6 syntax, and add improved build and test scripts.
-* [BREAKING] Drop support for direct `<script>` loading in browsers. (Only provide ES6 module and CommonJs module.)
-* chore: Add Prettier auto-formatting
+* [BREAKING] chore: Drop support for direct `<script>` loading in browsers. (Only provide ES6 module and CommonJs module.)
+* [BREAKING] chore: Convert the module to ES6 syntax.
+* chore: Add Prettier auto-formatting and improved build and test scripts
 
 
 
