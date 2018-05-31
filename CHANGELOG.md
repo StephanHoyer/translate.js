@@ -7,6 +7,12 @@
 
 
 
+## 1.1.1
+_2018-05-28_
+* fix: Publish CommonJS module in ES5 syntax ([#37](https://github.com/StephanHoyer/translate.js/pull/37))
+
+
+
 ## 1.1.0
 _2018-05-04_
 * feat: Support default/"wild-card" `*` subkeys as fallback for missing subkey translations ([#37](https://github.com/StephanHoyer/translate.js/pull/37))
