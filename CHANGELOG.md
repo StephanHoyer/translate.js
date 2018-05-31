@@ -8,8 +8,8 @@
 
 
 ## 1.1.1
-_2018-05-28_
-* fix: Publish CommonJS module in ES5 syntax ([#37](https://github.com/StephanHoyer/translate.js/pull/37))
+_2018-05-31_
+* fix: Publish CommonJS module in ES5 syntax ([#48](https://github.com/StephanHoyer/translate.js/pull/48))
 
 
 
