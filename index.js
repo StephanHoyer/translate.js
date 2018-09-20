@@ -30,6 +30,8 @@ function translatejs(messageObject, options) {
     messageObject = translatejs.resolveAliases(messageObject)
   }
   const debug = options.debug
+  const useKeyForMissingTranslation =
+    options.useKeyForMissingTranslation !== false
 
   function getPluralValue(translation, count) {
     // Opinionated assumption: Pluralization rules are the same for negative and positive values.
@@ -99,6 +101,9 @@ function translatejs(messageObject, options) {
     }
 
     if (typeof translation !== 'string') {
+      if (!useKeyForMissingTranslation) {
+        return
+      }
       translation = translationKey
       if (debug) {
         if (subKey != null) {

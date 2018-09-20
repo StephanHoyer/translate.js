@@ -33,6 +33,7 @@ var options = {
     array: false,  //[Boolean]: Returns translations with placeholder-replacements as Arrays, if `true`.
     resolveAliases: false,  //[Boolean]: Parses all translations for aliases and replaces them, if `true`.
     pluralize: function(n, translationKey){ return Math.abs(n) }  //[Function(count, translationKey)]: Provides a custom pluralization mapping function, should return a number
+    useKeyForMissingTranslation: true //[Boolean]: If there is no translation found for given key, the key is used as translation, when set to false, it returns undefiend in this case
 }
 
 var t = translate(messages, [options])

@@ -56,6 +56,11 @@ describe('translate.js', () => {
     expect(t('nonexistentkey')).to.equal('nonexistentkey')
   })
 
+  it('should return undefiend if no translation is found and useKeyForMissingTranslation-option is set to false', () => {
+    const t1 = translate({}, { useKeyForMissingTranslation: false })
+    expect(t1('nonexistentkey')).to.equal(undefined)
+  })
+
   it('should return a translated string', () => {
     expect(t('plain')).to.equal('I like this.')
   })
