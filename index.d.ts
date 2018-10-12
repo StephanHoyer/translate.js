@@ -1,4 +1,4 @@
-// Type definitions for translate.js 1.2.0
+// Type definitions for translate.js 1.2.1
 // Project: https://github.com/StephanHoyer/translate.js#readme
 // Definitions by: Kurounin <https://github.com/Kurounin>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -33,7 +33,7 @@ export interface ArrayOptions extends Options {
 
 export type Translate<T extends ArrayOptions | Options> = {
 	keys: Messages;
-    arr: translateFunc1<any[]> & translateFunc2<any[]> & translateFunc3<any[]> & translateFunc4<any[]>;
+    arr: translateFunc1<any[]> & translateFunc2<any[]> & translateFunc3<any[]> & translateFunc4<any[]> & translateFunc5<any[]>;
 	opts: T;
 }
     & translateFunc1<T extends ArrayOptions ? any[] : string>
