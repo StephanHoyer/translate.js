@@ -1,3 +1,9 @@
+// Type definitions for translate.js/plurals 1.2.1
+// Project: https://github.com/StephanHoyer/translate.js#readme
+// Definitions by: Kurounin <https://github.com/Kurounin>
+// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+// TypeScript Version: 2.8
+
 type plural = (n: number, translationKey: string) => string;
 
 export const plural_CS: plural;
