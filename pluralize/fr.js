@@ -1,1 +1,3 @@
-proto/p_gt_1.js
+module.exports = function(n) {
+  return n !== 1 ? 'p' : 's'
+}
