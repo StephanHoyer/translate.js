@@ -7,6 +7,30 @@
 
 
 
+## 1.2.2
+_2018-10-24_
+* feat: Add `.d.ts` TypeScript type annotations ([#66](https://github.com/StephanHoyer/translate.js/pull/66))
+
+
+
+## 1.2.1
+_2018-09-27_
+* No changes. Minor dependency updates.
+
+
+
+## 1.2.0
+_2018-09-20_
+* feat: Add `useKeyForMissingTranslation` option to return `undefined` for missing translations
+
+
+
+## 1.1.2
+_2018-07-19_
+* No changes. Minor dependency updates.
+
+
+
 ## 1.1.1
 _2018-05-31_
 * fix: Publish CommonJS module in ES5 syntax ([#48](https://github.com/StephanHoyer/translate.js/pull/48))
