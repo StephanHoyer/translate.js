@@ -7,7 +7,7 @@
 
 
 
-## 1.2.3
+## 1.2.3 / 1.2.4
 _2018-11-02_
 * fix: Missing `pluralize/*` files on npmjs.org
 
