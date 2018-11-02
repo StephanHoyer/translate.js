@@ -12,7 +12,7 @@
     "rollup-plugin-buble": "0.19.4"
   },
   "scripts": {
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "build": "rollup -c",
     "_test": "node_modules/mocha/bin/mocha test.js",
     "test": "npm run format && npm run build && npm run _test",
