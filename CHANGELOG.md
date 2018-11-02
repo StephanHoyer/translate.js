@@ -7,6 +7,12 @@
 
 
 
+## 1.2.3
+_2018-11-02_
+* fix: Missing `pluralize/*` files on npmjs.org
+
+
+
 ## 1.2.2
 _2018-10-24_
 * feat: Add `.d.ts` TypeScript type annotations ([#66](https://github.com/StephanHoyer/translate.js/pull/66))
