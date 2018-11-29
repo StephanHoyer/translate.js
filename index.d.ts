@@ -5,7 +5,7 @@
 // TypeScript Version: 2.8
 
 interface Params {
-    [key: string]: string;
+    [key: string]: string | number;
 }
 
 export interface Messages {
