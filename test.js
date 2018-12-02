@@ -73,6 +73,12 @@ describe('translate.js', () => {
     expect(t('like', { thing: 'Sun' })).to.equal('I like Sun!')
   })
 
+  it('should treat replacement values in toString-able object form as strings', () => {
+    expect(t('like', { thing: { toString: () => 'Moon' } })).to.equal(
+      'I like Moon!'
+    )
+  })
+
   it('should return a not-translated string and replace a placeholder ', () => {
     expect(t('This {thing} not translated, yet', { thing: 'string' })).to.equal(
       'This string not translated, yet'
