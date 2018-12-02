@@ -19,11 +19,14 @@ type translateFunc3<T> = (key: string, params: Params) => T;
 type translateFunc4<T> = (key: string, subKey: number | string, params: Params) => T;
 type translateFunc5<T> = (key: string, params: Params, subKey: number | string) => T;
 
+
+import { pluralizer } from './plurals';
+
 export interface Options {
 	debug?: boolean;
 	array?: boolean;
 	resolveAliases?: boolean;
-	pluralize?: (n: number, translationKey: string) => number | string;
+	pluralize?: pluralizer;
 	useKeyForMissingTranslation?: boolean;
 }
 
