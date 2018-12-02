@@ -5,5 +5,15 @@
   "singleQuote": true,
   "arrowParens": "always",
   "trailingComma": "es5",
-  "semi": false
+  "endOfLine": "lf",
+  "semi": false,
+
+  "overrides": [
+    {
+      "files": "*.md",
+      "options": {
+        "proseWrap": "always"
+      }
+    }
+  ]
 }
