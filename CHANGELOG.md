@@ -4,6 +4,7 @@
 ## Upcoming...
 <!-- Add features here -->
 * ...
+* fix: Drop support for second parameter for pluralizer functions (See [commit](https://github.com/StephanHoyer/translate.js/commit/1cf222ae))
 
 
 
