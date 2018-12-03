@@ -1,12 +1,8 @@
-// Type definitions for translate.js 1.2.1
+// Type definitions for translate.js 1.2.4
 // Project: https://github.com/StephanHoyer/translate.js#readme
 // Definitions by: Kurounin <https://github.com/Kurounin>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.8
-
-interface Params {
-    [key: string]: string | number;
-}
 
 export interface Messages {
     [key: string]: string | Messages;
@@ -15,16 +11,16 @@ export interface Messages {
 
 type translateFunc1<T> = (key: string) => T;
 type translateFunc2<T> = (key: string, subKey: number | string) => T;
-type translateFunc3<T> = (key: string, params: Params) => T;
-type translateFunc4<T> = (key: string, subKey: number | string, params: Params) => T;
-type translateFunc5<T> = (key: string, params: Params, subKey: number | string) => T;
+type translateFunc3<T> = (key: string, params: object) => T;
+type translateFunc4<T> = (key: string, subKey: number | string, params: object) => T;
+type translateFunc5<T> = (key: string, params: object, subKey: number | string) => T;
 
 export interface Options {
-	debug?: boolean;
-	array?: boolean;
-	resolveAliases?: boolean;
-	pluralize?: (n: number, translationKey: string) => number | string;
-	useKeyForMissingTranslation?: boolean;
+    debug?: boolean;
+    array?: boolean;
+    resolveAliases?: boolean;
+    pluralize?: (n: number, translationKey: string) => number | string;
+    useKeyForMissingTranslation?: boolean;
 }
 
 export interface ArrayOptions extends Options {
@@ -32,9 +28,9 @@ export interface ArrayOptions extends Options {
 }
 
 export type Translate<T extends ArrayOptions | Options> = {
-	keys: Messages;
+    keys: Messages;
     arr: translateFunc1<any[]> & translateFunc2<any[]> & translateFunc3<any[]> & translateFunc4<any[]> & translateFunc5<any[]>;
-	opts: T;
+    opts: T;
 }
     & translateFunc1<T extends ArrayOptions ? any[] : string>
     & translateFunc2<T extends ArrayOptions ? any[] : string>
