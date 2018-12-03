@@ -4,27 +4,29 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.8
 
-export interface Messages {
-    [key: string]: string | Messages;
-    [key: number]: string | Messages;
-}
-
 type translateFunc1<T> = (key: string) => T;
 type translateFunc2<T> = (key: string, subKey: number | string) => T;
 type translateFunc3<T> = (key: string, params: object) => T;
 type translateFunc4<T> = (key: string, subKey: number | string, params: object) => T;
 type translateFunc5<T> = (key: string, params: object, subKey: number | string) => T;
 
+import { pluralizer } from './plurals';
+
 export interface Options {
     debug?: boolean;
     array?: boolean;
     resolveAliases?: boolean;
-    pluralize?: (n: number, translationKey: string) => number | string;
+    pluralize?: pluralizer;
     useKeyForMissingTranslation?: boolean;
 }
 
 export interface ArrayOptions extends Options {
     array: true;
+}
+
+export interface Messages {
+    [key: string]: string | Messages;
+    [key: number]: string | Messages;
 }
 
 export type Translate<T extends ArrayOptions | Options> = {

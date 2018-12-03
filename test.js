@@ -56,10 +56,14 @@ describe('translate.js', () => {
     expect(t('nonexistentkey')).to.equal('nonexistentkey')
   })
 
-  it('should return undefiend if no translation is found and useKeyForMissingTranslation-option is set to false', () => {
-    const t1 = translate({}, { useKeyForMissingTranslation: false })
-    expect(t1('nonexistentkey')).to.equal(undefined)
-  })
+  it(
+    'should return undefiend if no translation is found ' +
+      'and useKeyForMissingTranslation-option is set to false',
+    () => {
+      const t1 = translate({}, { useKeyForMissingTranslation: false })
+      expect(t1('nonexistentkey')).to.equal(undefined)
+    }
+  )
 
   it('should return a translated string', () => {
     expect(t('plain')).to.equal('I like this.')
@@ -71,6 +75,12 @@ describe('translate.js', () => {
 
   it('should return a translated string and replace a placeholder ', () => {
     expect(t('like', { thing: 'Sun' })).to.equal('I like Sun!')
+  })
+
+  it('should treat replacement values in toString-able object form as strings', () => {
+    expect(t('like', { thing: { toString: () => 'Moon' } })).to.equal(
+      'I like Moon!'
+    )
   })
 
   it('should return a not-translated string and replace a placeholder ', () => {
@@ -112,17 +122,25 @@ describe('translate.js', () => {
     expect(t('hits', 4)).to.equal('4 Hits')
   })
 
-  it('should return a translated string with the correct plural form and replaced placeholders: t(key, replacements, count)', () => {
-    expect(t('date', { day: '13', year: 2014 }, 2)).to.equal(
-      '13. February 2014'
-    )
-  })
+  it(
+    'should return a translated string with the correct plural form and ' +
+      'replaced placeholders: t(key, replacements, count)',
+    () => {
+      expect(t('date', { day: '13', year: 2014 }, 2)).to.equal(
+        '13. February 2014'
+      )
+    }
+  )
 
-  it('should return a translated string with the correct plural form and replaced placeholders: t(key, count, replacements)', () => {
-    expect(t('date', 2, { day: '13', year: 2014 })).to.equal(
-      '13. February 2014'
-    )
-  })
+  it(
+    'should return a translated string with the correct plural form and ' +
+      'replaced placeholders: t(key, count, replacements)',
+    () => {
+      expect(t('date', 2, { day: '13', year: 2014 })).to.equal(
+        '13. February 2014'
+      )
+    }
+  )
 
   const placeholders = { name: 'Alice' }
   it('should handle combination of count and named placeholders', () => {
@@ -156,7 +174,7 @@ describe('translate.js', () => {
   })
 
   // custom isPlural function
-  const pluralize_IS = function(n /*, tarlationKey*/) {
+  const pluralize_IS = function(n) {
     // Icelandic rules: Numbers ending in 1 are singular - unless ending in 11.
     return n % 10 !== 1 || n % 100 === 11 ? 'p' : 's'
   }
@@ -214,24 +232,32 @@ describe('translate.js', () => {
 
   // wrong arguments
   const t4 = translate(translationsObject, 'asd')
-  it('should return a translated string with the correct plural form and replaced placeholders: t(key, count, replacements) [wrong optio arg]', () => {
-    expect(t4('date', 2, { day: '13', year: 2014 })).to.equal(
-      '13. February 2014'
-    )
-  })
+  it(
+    'should return a translated string with the correct plural form and ' +
+      'replaced placeholders: t(key, count, replacements) [wrong optio arg]',
+    () => {
+      expect(t4('date', 2, { day: '13', year: 2014 })).to.equal(
+        '13. February 2014'
+      )
+    }
+  )
 
   // debug enabled
   const t5 = translate(translationsObject, { debug: true })
-  it('should return @@translationKey@@/@@translationKey.subKey@@ if no translation is found and debug is true', () => {
-    expect(t5('nonexistentkey')).to.equal('@@nonexistentkey@@')
-    expect(t5('translationWithSubkeys', 'not there')).to.equal(
-      '@@translationWithSubkeys.not there@@'
-    )
-    expect(t5('translationWithSubkeys', 42)).to.equal(
-      '@@translationWithSubkeys.42@@'
-    )
-    expect(t5('nonexistentkey', 42)).to.equal('@@nonexistentkey.42@@')
-  })
+  it(
+    'should return @@translationKey@@/@@translationKey.subKey@@ if no translation ' +
+      'is found and debug is true',
+    () => {
+      expect(t5('nonexistentkey')).to.equal('@@nonexistentkey@@')
+      expect(t5('translationWithSubkeys', 'not there')).to.equal(
+        '@@translationWithSubkeys.not there@@'
+      )
+      expect(t5('translationWithSubkeys', 42)).to.equal(
+        '@@translationWithSubkeys.42@@'
+      )
+      expect(t5('nonexistentkey', 42)).to.equal('@@nonexistentkey.42@@')
+    }
+  )
 
   const t6Keys = {
     fruit: '{0} apples, {1} oranges, {2} kiwis',

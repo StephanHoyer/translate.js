@@ -39,7 +39,7 @@ function translatejs(messageObject, options) {
     let mappedCount = Math.abs(count)
 
     const plFunc = (tFunc.opts || {}).pluralize
-    mappedCount = plFunc ? plFunc(mappedCount, translation) : mappedCount
+    mappedCount = plFunc ? plFunc(mappedCount) : mappedCount
     if (translation[mappedCount] != null) {
       return translation[mappedCount]
     }
