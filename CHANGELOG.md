@@ -5,6 +5,12 @@
 <!-- Add features here -->
 
 - ...
+
+## 1.2.5
+
+_2018-12-03_
+
+- fix: Lift TypeScript restriction on named replacement values
 - fix: Drop support for second parameter for pluralizer functions (See
   [commit](https://github.com/StephanHoyer/translate.js/commit/1cf222ae))
 
