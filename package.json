@@ -16,7 +16,7 @@
     "build": "rollup -c",
     "_test": "node_modules/mocha/bin/mocha test.js",
     "test": "npm run format && npm run build && npm run _test",
-    "format": "prettier *.js pluralize/*.js --write",
+    "format": "prettier *.js pluralize/*.js *.md --write",
     "dev": "onchange './index.js' -- npm run test"
   },
   "repository": {
