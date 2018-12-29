@@ -13,11 +13,11 @@
   },
   "scripts": {
     "prepublishOnly": "npm run test",
-    "build": "rollup -c",
-    "_test": "node_modules/mocha/bin/mocha test.js",
+    "build": "rollup -c && cp src/*.d.ts .",
+    "_test": "node_modules/mocha/bin/mocha src/test.js",
     "test": "npm run format && npm run build && npm run _test",
-    "format": "prettier *.js pluralize/*.js *.md --write",
-    "dev": "onchange './index.js' -- npm run test"
+    "format": "prettier rollup.config.js src/*.js pluralize/*.js *.md --write",
+    "dev": "onchange './src/*.js' -- npm run test"
   },
   "repository": {
     "type": "git",

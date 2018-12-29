@@ -1,7 +1,7 @@
 'use strict'
 
 /* global require, describe, it */
-const translate = require('.')
+const translate = require('../') // test the built/transpiled module
 const expect = require('expect.js')
 
 describe('translate.js', () => {
