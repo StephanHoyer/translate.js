@@ -1,0 +1,7 @@
+/src
+/rollup.config.js
+/.prettierrc
+/*.md
+/package-lock.json
+/benchmark.html
+#/.travix.yml
