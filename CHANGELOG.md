@@ -5,6 +5,11 @@
 <!-- Add features here -->
 
 - ...
+
+## 1.2.6
+
+_2018-12-29_
+
 - fix: Transpile published ESM module to es5 syntax
 
 ## 1.2.5
