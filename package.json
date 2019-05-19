@@ -6,7 +6,7 @@
     "benchmark": "2.1.4",
     "expect.js": "0.3.1",
     "mocha": "5.1.1",
-    "onchange": "5.2.0",
+    "onchange": "6.0.0",
     "prettier": "1.15.3",
     "rollup": "1.0.0",
     "rollup-plugin-buble": "0.19.4"
