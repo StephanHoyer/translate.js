@@ -121,8 +121,8 @@ function translatejs(messageObject, options) {
       }
     }
 
-    if (complex || debug) {
-      translation = replacePlaceholders(translation, replacements, subKey)
+    if (complex) {
+      return replacePlaceholders(translation, replacements, subKey)
     }
     return translation
   }
