@@ -1,3 +1,3 @@
 module.exports = function(n) {
-  return n !== 1 ? 'p' : 's'
+  return n % 100 === 1 ? 's' : 'p'
 }
