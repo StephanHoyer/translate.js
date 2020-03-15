@@ -192,12 +192,12 @@ t('sheep', 13) === 'Baaahd luck' // direct subkey hit
 ```
 
 Translate.js comes with a predefined `pluralize` functions for
-[several languages](plurals.js). These can be imported into your code as needed,
-like so:
+[several languages](pluralize/index.js). These can be imported into your code as
+needed, like so:
 
 ```js
-import { plural_IS } from 'translate.js/plurals'
-// var plural_IS = require('translate.js/pluralize/is')
+var { plural_IS } = require('translate.js/pluralize') // cjs
+// import { plural_IS } from 'translate.js/plurals' // es6
 var t = translate(messages_IS, {
   pluralize: plural_IS,
 })

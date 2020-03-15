@@ -3,6 +3,7 @@
 ## Upcoming...
 
 - <!-- Add features here -->
+- feat: Add `translate.js/pluralize` module with named CJS exports and types
 
 ## 1.3.0 – 1.3.1
 

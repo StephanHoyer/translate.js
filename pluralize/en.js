@@ -1,3 +1,1 @@
-module.exports = function(n) {
-  return n !== 1 ? 'p' : 's'
-}
+module.exports = require('./').plural_EN

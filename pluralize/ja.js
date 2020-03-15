@@ -1,3 +1,1 @@
-module.exports = function(n) {
-  return 'n'
-}
+module.exports = require('./').plural_JA
