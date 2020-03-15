@@ -1,10 +1,10 @@
 'use strict'
+/* global require */
 
-/* global require, describe, it */
+const o = require('ospec')
 const translate = require('../') // test the built/transpiled module
-const expect = require('expect.js')
 
-describe('translate.js', () => {
+o.spec('translate.js', () => {
   const translationsObject = {
     plain: 'I like this.',
     like: 'I like {thing}!',
@@ -52,107 +52,118 @@ describe('translate.js', () => {
 
   const t = translate(translationsObject)
 
-  it('should return translationKey if no translation is found', () => {
-    expect(t('nonexistentkey')).to.equal('nonexistentkey')
+  o('should return translationKey if no translation is found', () => {
+    o(t('nonexistentkey')).equals('nonexistentkey')
   })
 
-  it(
+  o(
     'should return undefiend if no translation is found ' +
       'and useKeyForMissingTranslation-option is set to false',
     () => {
       const t1 = translate({}, { useKeyForMissingTranslation: false })
-      expect(t1('nonexistentkey')).to.equal(undefined)
+      o(t1('nonexistentkey')).equals(undefined)
     }
   )
 
-  it('should return a translated string', () => {
-    expect(t('plain')).to.equal('I like this.')
+  o('should return a translated string', () => {
+    o(t('plain')).equals('I like this.')
   })
 
-  it('should return a translated string for prosa keys', () => {
-    expect(t('Prosa Key')).to.equal('This is prosa!')
+  o('should return a translated string for prosa keys', () => {
+    o(t('Prosa Key')).equals('This is prosa!')
   })
 
-  it('should return a translated string and replace a placeholder ', () => {
-    expect(t('like', { thing: 'Sun' })).to.equal('I like Sun!')
+  o('should return a translated string and replace a placeholder ', () => {
+    o(t('like', { thing: 'Sun' })).equals('I like Sun!')
   })
 
-  it('should treat replacement values in toString-able object form as strings', () => {
-    expect(t('like', { thing: { toString: () => 'Moon' } })).to.equal(
-      'I like Moon!'
-    )
-  })
+  o(
+    'should treat replacement values in toString-able object form as strings',
+    () => {
+      o(t('like', { thing: { toString: () => 'Moon' } })).equals('I like Moon!')
+    }
+  )
 
-  it('should return a not-translated string and replace a placeholder ', () => {
-    expect(t('This {thing} not translated, yet', { thing: 'string' })).to.equal(
+  o('should return a not-translated string and replace a placeholder ', () => {
+    o(t('This {thing} not translated, yet', { thing: 'string' })).equals(
       'This string not translated, yet'
     )
   })
 
-  it('should return a translated string and show missing placeholders', () => {
-    expect(t('like')).to.equal('I like {thing}!')
+  o('should return a translated string and show missing placeholders', () => {
+    o(t('like')).equals('I like {thing}!')
   })
 
-  it('should return a translated string and replace a count', () => {
-    expect(t('simpleCounter', 25)).to.equal('The count is 25.')
+  o('should return a translated string and replace a count', () => {
+    o(t('simpleCounter', 25)).equals('The count is 25.')
   })
 
-  it('should return a translated string according to a potential dynamic subkey', () => {
-    const dynamicSubKey = 'foo'
-    expect(t('translationWithSubkeys', dynamicSubKey)).to.equal('FOO')
-  })
-
-  it('should return a translated string with the correct plural form (0)', () => {
-    expect(t('hits', 0)).to.equal('No Hits')
-  })
-
-  it('should return a translated string with the correct plural form (1)', () => {
-    expect(t('hits', 1)).to.equal('1 Hit')
-  })
-
-  it('should return a translated string with the correct plural form (2)', () => {
-    expect(t('hits', 2)).to.equal('2 Hitse')
-  })
-
-  it('should return a translated string with the correct plural form (3)', () => {
-    expect(t('hits', 3)).to.equal('3 Hitses')
-  })
-
-  it('should return a translated string with the correct plural form (4)', () => {
-    expect(t('hits', 4)).to.equal('4 Hits')
-  })
-
-  it(
-    'should return a translated string with the correct plural form and ' +
-      'replaced placeholders: t(key, replacements, count)',
+  o(
+    'should return a translated string according to a potential dynamic subkey',
     () => {
-      expect(t('date', { day: '13', year: 2014 }, 2)).to.equal(
-        '13. February 2014'
-      )
+      const dynamicSubKey = 'foo'
+      o(t('translationWithSubkeys', dynamicSubKey)).equals('FOO')
     }
   )
 
-  it(
+  o(
+    'should return a translated string with the correct plural form (0)',
+    () => {
+      o(t('hits', 0)).equals('No Hits')
+    }
+  )
+
+  o(
+    'should return a translated string with the correct plural form (1)',
+    () => {
+      o(t('hits', 1)).equals('1 Hit')
+    }
+  )
+
+  o(
+    'should return a translated string with the correct plural form (2)',
+    () => {
+      o(t('hits', 2)).equals('2 Hitse')
+    }
+  )
+
+  o(
+    'should return a translated string with the correct plural form (3)',
+    () => {
+      o(t('hits', 3)).equals('3 Hitses')
+    }
+  )
+
+  o(
+    'should return a translated string with the correct plural form (4)',
+    () => {
+      o(t('hits', 4)).equals('4 Hits')
+    }
+  )
+
+  o(
+    'should return a translated string with the correct plural form and ' +
+      'replaced placeholders: t(key, replacements, count)',
+    () => {
+      o(t('date', { day: '13', year: 2014 }, 2)).equals('13. February 2014')
+    }
+  )
+
+  o(
     'should return a translated string with the correct plural form and ' +
       'replaced placeholders: t(key, count, replacements)',
     () => {
-      expect(t('date', 2, { day: '13', year: 2014 })).to.equal(
-        '13. February 2014'
-      )
+      o(t('date', 2, { day: '13', year: 2014 })).equals('13. February 2014')
     }
   )
 
   const placeholders = { name: 'Alice' }
-  it('should handle combination of count and named placeholders', () => {
-    expect(t('comboCounter', 10, placeholders)).to.equal(
-      'Alice is 10 years old.'
-    )
-    expect(t('comboCounter', placeholders, 10)).to.equal(
-      'Alice is 10 years old.'
-    )
+  o('should handle combination of count and named placeholders', () => {
+    o(t('comboCounter', 10, placeholders)).equals('Alice is 10 years old.')
+    o(t('comboCounter', placeholders, 10)).equals('Alice is 10 years old.')
   })
-  it("shouldn't modify the placeholder object", () => {
-    expect('n' in placeholders).to.equal(false)
+  o("shouldn't modify the placeholder object", () => {
+    o('n' in placeholders).equals(false)
   })
 
   const nonstringtranslations = {
@@ -164,13 +175,13 @@ describe('translate.js', () => {
     happensToBeString: 'OK',
   }
   const t0 = translate(nonstringtranslations)
-  it('should treat any non-string translations as missing', () => {
-    expect(t0('foo')).to.equal('foo')
-    expect(t0('bar')).to.equal('bar')
-    expect(t0('baz')).to.equal('baz')
-    expect(t0('heh')).to.equal('heh')
-    expect(t0('ooh')).to.equal('ooh')
-    expect(t0('happensToBeString')).to.equal('OK')
+  o('should treat any non-string translations as missing', () => {
+    o(t0('foo')).equals('foo')
+    o(t0('bar')).equals('bar')
+    o(t0('baz')).equals('baz')
+    o(t0('heh')).equals('heh')
+    o(t0('ooh')).equals('ooh')
+    o(t0('happensToBeString')).equals('OK')
   })
 
   // custom isPlural function
@@ -179,83 +190,94 @@ describe('translate.js', () => {
     return n % 10 !== 1 || n % 100 === 11 ? 'p' : 's'
   }
   const t3b = translate(translationsObject, { pluralize: pluralize_IS })
-  it('should pluralize (0) correctly in Icelandic', () => {
-    expect(t3b('icelandicSheep', 0)).to.equal('Engar kindur')
+  o('should pluralize (0) correctly in Icelandic', () => {
+    o(t3b('icelandicSheep', 0)).equals('Engar kindur')
   })
-  it('should pluralize (1) correctly in Icelandic', () => {
-    expect(t3b('icelandicSheep', 1)).to.equal('1 kind')
+  o('should pluralize (1) correctly in Icelandic', () => {
+    o(t3b('icelandicSheep', 1)).equals('1 kind')
   })
-  it('should pluralize (2) correctly in Icelandic', () => {
-    expect(t3b('icelandicSheep', 2)).to.equal('2 kindur')
+  o('should pluralize (2) correctly in Icelandic', () => {
+    o(t3b('icelandicSheep', 2)).equals('2 kindur')
   })
-  it('should pluralize (11) correctly in Icelandic', () => {
-    expect(t3b('icelandicSheep', 11)).to.equal('11 kindur')
+  o('should pluralize (11) correctly in Icelandic', () => {
+    o(t3b('icelandicSheep', 11)).equals('11 kindur')
   })
-  it('should pluralize (21) correctly in Icelandic', () => {
-    expect(t3b('icelandicSheep', 21)).to.equal('21 kind')
+  o('should pluralize (21) correctly in Icelandic', () => {
+    o(t3b('icelandicSheep', 21)).equals('21 kind')
   })
-  it('should pluralize (29) correctly in Icelandic', () => {
-    expect(t3b('icelandicSheep', 29)).to.equal('29 kindur')
+  o('should pluralize (29) correctly in Icelandic', () => {
+    o(t3b('icelandicSheep', 29)).equals('29 kindur')
   })
-  it('should automatically return correct pluralization for negative counts', () => {
-    expect(t3b('icelandicSheep', -21)).to.equal('-21 kind')
-    expect(t3b('icelandicSheep', -29)).to.equal('-29 kindur')
-  })
-  it('should return explicit pluralization property regardless of pluralization function', () => {
-    expect(t3b('icelandicSheep', 13)).to.equal('Baaahd luck!')
-  })
-  it('should not match negative count with its explicitly defined positive counterpart', () => {
-    expect(t3b('icelandicSheep', -13)).to.equal('-13 kindur')
-  })
-  it('should default to the `n` key if some/all pluralization keys are missing', () => {
-    expect(t3b('horses', 7)).to.equal('Pluralization keys are missing')
-  })
+  o(
+    'should automatically return correct pluralization for negative counts',
+    () => {
+      o(t3b('icelandicSheep', -21)).equals('-21 kind')
+      o(t3b('icelandicSheep', -29)).equals('-29 kindur')
+    }
+  )
+  o(
+    'should return explicit pluralization property regardless of pluralization function',
+    () => {
+      o(t3b('icelandicSheep', 13)).equals('Baaahd luck!')
+    }
+  )
+  o(
+    'should not match negative count with its explicitly defined positive counterpart',
+    () => {
+      o(t3b('icelandicSheep', -13)).equals('-13 kindur')
+    }
+  )
+  o(
+    'should default to the `n` key if some/all pluralization keys are missing',
+    () => {
+      o(t3b('horses', 7)).equals('Pluralization keys are missing')
+    }
+  )
 
-  it('should ignore count/subkey if translation is a plain string', () => {
-    expect(t3b('plain', 666)).to.equal('I like this.')
-    expect(t3b('plain', 'nonexistentsubkey')).to.equal('I like this.')
+  o('should ignore count/subkey if translation is a plain string', () => {
+    o(t3b('plain', 666)).equals('I like this.')
+    o(t3b('plain', 'nonexistentsubkey')).equals('I like this.')
   })
-  it('should ignore replacements object if translation is a plain string', () => {
-    expect(t3b('plain', { nonexistentreplacement: 'foo' })).to.equal(
-      'I like this.'
-    )
+  o(
+    'should ignore replacements object if translation is a plain string',
+    () => {
+      o(t3b('plain', { nonexistentreplacement: 'foo' })).equals('I like this.')
+    }
+  )
+  o('should return the "*" subkey value if no subkey is passed', () => {
+    o(t3b('translationWithDefaultSubkey')).equals('I am a default value')
   })
-  it('should return the "*" subkey value if no subkey is passed', () => {
-    expect(t3b('translationWithDefaultSubkey')).to.equal('I am a default value')
-  })
-  it('should retry the "*" subkey value if passed subkey is missing', () => {
-    expect(t3b('translationWithDefaultSubkey', 'nonexistentsubkey')).to.equal(
+  o('should retry the "*" subkey value if passed subkey is missing', () => {
+    o(t3b('translationWithDefaultSubkey', 'nonexistentsubkey')).equals(
       'I am a default value'
     )
-    expect(t3b('date', 13, { day: '13', year: 2013 })).to.equal('WAT! 13!?')
+    o(t3b('date', 13, { day: '13', year: 2013 })).equals('WAT! 13!?')
   })
 
   // wrong arguments
   const t4 = translate(translationsObject, 'asd')
-  it(
+  o(
     'should return a translated string with the correct plural form and ' +
       'replaced placeholders: t(key, count, replacements) [wrong optio arg]',
     () => {
-      expect(t4('date', 2, { day: '13', year: 2014 })).to.equal(
-        '13. February 2014'
-      )
+      o(t4('date', 2, { day: '13', year: 2014 })).equals('13. February 2014')
     }
   )
 
   // debug enabled
   const t5 = translate(translationsObject, { debug: true })
-  it(
+  o(
     'should return @@translationKey@@/@@translationKey.subKey@@ if no translation ' +
       'is found and debug is true',
     () => {
-      expect(t5('nonexistentkey')).to.equal('@@nonexistentkey@@')
-      expect(t5('translationWithSubkeys', 'not there')).to.equal(
+      o(t5('nonexistentkey')).equals('@@nonexistentkey@@')
+      o(t5('translationWithSubkeys', 'not there')).equals(
         '@@translationWithSubkeys.not there@@'
       )
-      expect(t5('translationWithSubkeys', 42)).to.equal(
+      o(t5('translationWithSubkeys', 42)).equals(
         '@@translationWithSubkeys.42@@'
       )
-      expect(t5('nonexistentkey', 42)).to.equal('@@nonexistentkey.42@@')
+      o(t5('nonexistentkey', 42)).equals('@@nonexistentkey.42@@')
     }
   )
 
@@ -268,18 +290,18 @@ describe('translate.js', () => {
     },
   }
   const t6 = translate(t6Keys)
-  it('should accept placeholder values in arrays', () => {
-    expect(t6('fruit', ['shiny', 'round'])).to.equal(
+  o('should accept placeholder values in arrays', () => {
+    o(t6('fruit', ['shiny', 'round'])).equals(
       'shiny apples, round oranges, {2} kiwis'
     )
   })
-  it('should mix count and array placeholders', () => {
-    expect(t6('bread', 7, [10])).to.equal('10 buns, 7 scones')
-    expect(t6('bread', [7], 10)).to.equal('7 buns, 10 scones')
+  o('should mix count and array placeholders', () => {
+    o(t6('bread', 7, [10])).equals('10 buns, 7 scones')
+    o(t6('bread', [7], 10)).equals('7 buns, 10 scones')
   })
-  it('should mix array placeholders and pluralization', () => {
-    expect(t6('items', 1, ['Happy'])).to.equal('Happy item (1)')
-    expect(t6('items', 7, ['Funny'])).to.equal('Funny items (7)')
+  o('should mix array placeholders and pluralization', () => {
+    o(t6('items', 1, ['Happy'])).equals('Happy item (1)')
+    o(t6('items', 7, ['Funny'])).equals('Funny items (7)')
   })
 
   const tXKeys = {
@@ -292,137 +314,149 @@ describe('translate.js', () => {
   }
   let tX
 
-  it('should gracefully handle no parameters', () => {
+  o('should gracefully handle no parameters', () => {
     tX = translate()
-    expect(tX('name')).to.equal('name')
-    expect(tX('x', 1)).to.equal('x')
+    o(tX('name')).equals('name')
+    o(tX('x', 1)).equals('x')
   })
 
-  it('should gracefully handle nully (not falsey) parameters', () => {
+  o('should gracefully handle nully (not falsey) parameters', () => {
     tX = translate(undefined, null)
-    expect(tX('name')).to.equal('name')
-    expect(tX('x', 1)).to.equal('x')
+    o(tX('name')).equals('name')
+    o(tX('x', 1)).equals('x')
   })
 
-  it('should expose .keys and .opts properties', () => {
-    expect(tX.keys).to.be.an('object')
-    expect(tX.opts).to.be.an('object')
-    expect(tX.keys).to.eql({})
+  o('should expose .keys and .opts properties', () => {
+    o(tX.keys && typeof tX.keys === 'object').equals(true)
+    o(tX.keys && typeof tX.opts === 'object').equals(true)
+    o(tX.keys).deepEquals({})
   })
 
-  it('should allow late binding of translation keys', () => {
+  o('should allow late binding of translation keys', () => {
     tX.keys.foo = 'bar'
-    expect(tX('foo')).to.equal('bar')
+    o(tX('foo')).equals('bar')
   })
 
-  it('should allow late binding of translation keys', () => {
+  o('should allow late binding of all translation keys', () => {
     tX.keys = tXKeys
-    expect(tX('foo')).to.equal('foo')
-    expect(tX('name')).to.equal('English')
-    expect(tX('x', 1)).to.equal('Default')
+    o(tX('foo')).equals('foo')
+    o(tX('name')).equals('English')
+    o(tX('x', 1)).equals('Default')
   })
 
-  it('should allow late binding of pluralization', () => {
+  o('should allow late binding of pluralization', () => {
     tX.opts.pluralize = function(n) {
       return 99
     }
-    expect(tX('x', 1)).to.equal('Ninety-nine')
+    o(tX('x', 1)).equals('Ninety-nine')
   })
 
-  it('should gracefully handle completely overloading the opts', () => {
+  o('should gracefully handle completely overloading the opts', () => {
     tX.opts = {
       pluralize: function(n) {
         return 13
       },
     }
-    expect(tX('x', 1)).to.equal('Thirteen')
+    o(tX('x', 1)).equals('Thirteen')
   })
 
-  it('should gracefully handle accidental removal of opts', () => {
+  o('should gracefully handle accidental removal of opts', () => {
     delete tX.opts // Oops!
-    expect(tX('x', 1)).to.equal('Default') // no pluralization found
+    o(tX('x', 1)).equals('Default') // no pluralization found
   })
 
-  it('should handle adjacent placeholders', () => {
+  o('should handle adjacent placeholders', () => {
     const t = translate({ test: '{foo}{bar}' })
-    expect(t('test', { foo: 'Hello', bar: 'World' })).to.equal('HelloWorld')
+    o(t('test', { foo: 'Hello', bar: 'World' })).equals('HelloWorld')
   })
 
-  it('should handle the placeholder tokens used internally by `replacePlaceholders()`', () => {
-    const t = translate({ test: '{x}' })
-    expect(t('test', { x: 'HelloWorld' })).to.equal('HelloWorld')
-  })
+  o(
+    'should handle the placeholder tokens used internally by `replacePlaceholders()`',
+    () => {
+      const t = translate({ test: '{x}' })
+      o(t('test', { x: 'HelloWorld' })).equals('HelloWorld')
+    }
+  )
 })
 
-describe('Return array option', () => {
-  it('should return replacement-token translations as Arrays, when t.arr() is called', () => {
-    const t = translate({
-      test: 'abc {xyz} def',
-    })
-    expect(t.arr('test', { xyz: { foo: 'bar' } })).to.eql([
-      'abc ',
-      { foo: 'bar' },
-      ' def',
-    ])
-  })
-  it('should return replacement-token translations as Arrays, when `array` option is supplied', () => {
-    const t = translate(
-      {
+o.spec('Return array option', () => {
+  o(
+    'should return replacement-token translations as Arrays, when t.arr() is called',
+    () => {
+      const t = translate({
         test: 'abc {xyz} def',
-      },
-      { array: true }
-    )
-    expect(t('test', { xyz: { foo: 'bar' } })).to.eql([
-      'abc ',
-      { foo: 'bar' },
-      ' def',
-    ])
-  })
-  it('should return simple translations as strings, even when t.arr() is called', () => {
-    const t = translate({
-      test1: 'simple',
-      test2: { 4: 'simple' },
-      test3: { subkey: 'simple' },
-    })
-    expect(t.arr('test1')).to.eql('simple')
-    expect(t.arr('test2', 4)).to.eql('simple')
-    expect(t.arr('test3', 'subkey')).to.eql('simple')
-  })
+      })
+      o(t.arr('test', { xyz: { foo: 'bar' } })).deepEquals([
+        'abc ',
+        { foo: 'bar' },
+        ' def',
+      ])
+    }
+  )
+  o(
+    'should return replacement-token translations as Arrays, when `array` option is supplied',
+    () => {
+      const t = translate(
+        {
+          test: 'abc {xyz} def',
+        },
+        { array: true }
+      )
+      o(t('test', { xyz: { foo: 'bar' } })).deepEquals([
+        'abc ',
+        { foo: 'bar' },
+        ' def',
+      ])
+    }
+  )
+  o(
+    'should return simple translations as strings, even when t.arr() is called',
+    () => {
+      const t = translate({
+        test1: 'simple',
+        test2: { 4: 'simple' },
+        test3: { subkey: 'simple' },
+      })
+      o(t.arr('test1')).deepEquals('simple')
+      o(t.arr('test2', 4)).deepEquals('simple')
+      o(t.arr('test3', 'subkey')).deepEquals('simple')
+    }
+  )
 })
 
-describe('alias usage', () => {
-  it('should work with simple translations', () => {
-    expect(
+o.spec('alias usage', () => {
+  o('should work with simple translations', () => {
+    o(
       translate.resolveAliases({
         A: 'bar',
         B: 'foo {{A}} bar',
       })
-    ).to.eql({
+    ).deepEquals({
       A: 'bar',
       B: 'foo bar bar',
     })
   })
-  it('should work with nested translations', () => {
-    expect(
+  o('should work with nested translations', () => {
+    o(
       translate.resolveAliases({
         A: 'bar',
         B: 'foo {{A}} bar',
         C: '< {{B}} >',
       })
-    ).to.eql({
+    ).deepEquals({
       A: 'bar',
       B: 'foo bar bar',
       C: '< foo bar bar >',
     })
   })
-  it('should be agnostic to the order of key declarations', () => {
-    expect(
+  o('should be agnostic to the order of key declarations', () => {
+    o(
       translate.resolveAliases({
         C: '< {{B}} >',
         B: 'foo {{A}} bar',
         A: 'bar',
       })
-    ).to.eql(
+    ).deepEquals(
       translate.resolveAliases({
         A: 'bar',
         B: 'foo {{A}} bar',
@@ -430,36 +464,36 @@ describe('alias usage', () => {
       })
     )
   })
-  it('should allow multiple aliases per string', () => {
-    expect(
+  o('should allow multiple aliases per string', () => {
+    o(
       translate.resolveAliases({
         A: 'bar',
         B: 'foo {{A}} {{A}}',
         C: 'foo {{B}} {{A}}',
       })
-    ).to.eql({
+    ).deepEquals({
       A: 'bar',
       B: 'foo bar bar',
       C: 'foo foo bar bar bar',
     })
   })
-  it('should allow complex nesting with multiple aliases per string', () => {
-    expect(
+  o('should allow complex nesting with multiple aliases per string', () => {
+    o(
       translate.resolveAliases({
         A: 'A',
         B: 'B{{A}}B',
         C: 'C{{A}}C',
         D: 'D{{A}}{{B}}{{C}}D',
       })
-    ).to.eql({
+    ).deepEquals({
       A: 'A',
       B: 'BAB',
       C: 'CAC',
       D: 'DABABCACD',
     })
   })
-  it('should work within pluralizations', () => {
-    expect(
+  o('should work within pluralizations', () => {
+    o(
       translate.resolveAliases({
         A: 'bar',
         B: {
@@ -468,7 +502,7 @@ describe('alias usage', () => {
           n: 'n {{A}} bar',
         },
       })
-    ).to.eql({
+    ).deepEquals({
       A: 'bar',
       B: {
         1: '1 bar bar',
@@ -477,8 +511,8 @@ describe('alias usage', () => {
       },
     })
   })
-  it('should work within subkeys', () => {
-    expect(
+  o('should work within subkeys', () => {
+    o(
       translate.resolveAliases({
         A: 'bar',
         B: {
@@ -486,7 +520,7 @@ describe('alias usage', () => {
           ho: '2 {{A}} bar',
         },
       })
-    ).to.eql({
+    ).deepEquals({
       A: 'bar',
       B: {
         hi: '1 bar bar',
@@ -494,52 +528,46 @@ describe('alias usage', () => {
       },
     })
   })
-  it('should detect unknown aliases', () => {
-    expect(() =>
+  o('should detect unknown aliases', () => {
+    o(() =>
       translate.resolveAliases({
         A: '{{B}}',
       })
-    ).to.throwException((e) => {
-      expect(e.message).to.be('No translation for alias "B"')
-    })
+    ).throws('No translation for alias "B"')
   })
-  it('should detect circle references', () => {
-    expect(() =>
+  o('should detect circle references', () => {
+    o(() =>
       translate.resolveAliases({
         A: '{{B}}',
         B: '{{A}}',
       })
-    ).to.throwException((e) => {
-      expect(e.message).to.be('Circular reference for "B" detected')
-    })
+    ).throws('Circular reference for "B" detected')
   })
-  it('should detect using complex translations (e.g. pluralized ones)', () => {
-    expect(() =>
+  o('should detect using complex translations (e.g. pluralized ones)', () => {
+    o(() =>
       translate.resolveAliases({
         A: {
           1: 'one',
         },
         B: '{{A}}',
       })
-    ).to.throwException((e) => {
-      expect(e.message).to.be("You can't alias objects")
-    })
+    ).throws("You can't alias objects")
   })
-  it('should allow targetting subkeys', () => {
-    expect(
+  o('should allow targetting subkeys', () => {
+    o(
       translate.resolveAliases({
         A: { b: 'bar' },
         B: 'Foo {{A[b]}}',
         C: 'Foo {{A[b]}}',
       })
-    ).to.eql({
+    ).deepEquals({
       A: { b: 'bar' },
       B: 'Foo bar',
       C: 'Foo bar',
     })
   })
-  it('should work with pluralized forms', () => {
-    expect(
+  o('should work with pluralized forms', () => {
+    o(
       translate.resolveAliases({
         A: { 1: '1 bar', n: '{n} bars' },
         B: {
@@ -547,7 +575,7 @@ describe('alias usage', () => {
           n: '{n} Foo {{A[n]}}',
         },
       })
-    ).to.eql({
+    ).deepEquals({
       A: { 1: '1 bar', n: '{n} bars' },
       B: {
         1: '1 Foo 1 bar',
@@ -555,63 +583,58 @@ describe('alias usage', () => {
       },
     })
   })
-  it("should ignore alias' count/subkey if target is a plain string translation", () => {
-    expect(
-      translate.resolveAliases({
+  o(
+    "should ignore alias' count/subkey if target is a plain string translation",
+    () => {
+      o(
+        translate.resolveAliases({
+          A: 'bar',
+          B: 'Foo {{A[b]}}',
+          C: 'Foo {{A[b]}}',
+        })
+      ).deepEquals({
         A: 'bar',
-        B: 'Foo {{A[b]}}',
-        C: 'Foo {{A[b]}}',
+        B: 'Foo bar',
+        C: 'Foo bar',
       })
-    ).to.eql({
-      A: 'bar',
-      B: 'Foo bar',
-      C: 'Foo bar',
-    })
-  })
-  it("should throw when targetted subkeys don't exist", () => {
-    expect(() =>
+    }
+  )
+  o("should throw when targetted subkeys don't exist", () => {
+    o(() =>
       translate.resolveAliases({
         A: { b: 'bar' },
         B: 'Foo {{A[invalidSubkey]}}',
       })
-    ).to.throwException((e) => {
-      expect(e.message).to.be('No translation for alias "A[invalidSubkey]"')
-    })
+    ).throws('No translation for alias "A[invalidSubkey]"')
   })
-  it('should detect circle references in subkeyed targets', () => {
-    expect(() =>
+  o('should detect circle references in subkeyed targets', () => {
+    o(() =>
       translate.resolveAliases({
         A: { a: '{{B}}' },
         B: 'Foo {{A[a]}}',
       })
-    ).to.throwException((e) => {
-      expect(e.message).to.be('Circular reference for "B" detected')
-    })
-    expect(() =>
+    ).throws('Circular reference for "B" detected')
+    o(() =>
       translate.resolveAliases({
         B: 'Foo {{A[a]}}',
         A: { a: '{{B}}' },
       })
-    ).to.throwException((e) => {
-      expect(e.message).to.be('Circular reference for "A[a]" detected')
-    })
-    expect(() =>
+    ).throws('Circular reference for "A[a]" detected')
+    o(() =>
       translate.resolveAliases({
         A: { a: '{{B[b]}}' },
         B: { b: '{{A[a]}}' },
       })
-    ).to.throwException((e) => {
-      expect(e.message).to.be('Circular reference for "B[b]" detected')
-    })
+    ).throws('Circular reference for "B[b]" detected')
   })
-  it('should not auto-resolve aliases when optionsflag is not set', () => {
+  o('should not auto-resolve aliases when optionsflag is not set', () => {
     const t = translate({
       A: 'bar',
       B: 'foo {{A}} bar',
     })
-    expect(t('B')).to.be('foo {{A}} bar')
+    o(t('B')).equals('foo {{A}} bar')
   })
-  it('should auto-resolve aliases when optionsflag is set', () => {
+  o('should auto-resolve aliases when optionsflag is set', () => {
     const t = translate(
       {
         A: 'bar',
@@ -621,6 +644,6 @@ describe('alias usage', () => {
         resolveAliases: true,
       }
     )
-    expect(t('B')).to.be('foo bar bar')
+    o(t('B')).equals('foo bar bar')
   })
 })

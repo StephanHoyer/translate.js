@@ -5,16 +5,15 @@
   "devDependencies": {
     "@rollup/plugin-buble": "0.21.1",
     "benchmark": "2.1.4",
-    "expect.js": "0.3.1",
-    "mocha": "5.2.0",
     "onchange": "6.1.0",
+    "ospec": "^4.0.1",
     "prettier": "1.19.1",
     "rollup": "2.0.6"
   },
   "scripts": {
     "prepublishOnly": "npm run test",
     "build": "rollup -c && cp src/*.d.ts .",
-    "_test": "node_modules/mocha/bin/mocha src/test.js",
+    "_test": "node_modules/.bin/ospec src/test.js",
     "test": "npm run format && npm run build && npm run _test",
     "format": "prettier rollup.config.js src/*.js pluralize/*.js *.md --write",
     "dev": "onchange './src/*.js' -- npm run test"
