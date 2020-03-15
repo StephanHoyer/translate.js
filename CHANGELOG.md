@@ -3,13 +3,13 @@
 ## Upcoming...
 
 - <!-- Add features here -->
-- feat: Add `translate.js/pluralize` module with named CJS exports and types
 
-## 1.3.0 – 1.3.1
+## 1.3.0 – 1.3.2
 
 _2019-06-06_
 
 - feat: Improve TypeScript definitions to warn about invalid keys
+- feat: Add `translate.js/pluralize` module with named CJS exports and types
 - fix: Correct the return type for the `plurals.js` functions
 - refactor: Move all translation logic to reusable top-level functions.  
   This should make it much cheaper to instantiate hundreds of tiny translate.js
