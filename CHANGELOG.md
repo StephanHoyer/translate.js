@@ -3,6 +3,11 @@
 ## Upcoming...
 
 - <!-- Add features here -->
+
+## 1.3.0
+
+_2019-06-06_
+
 - feat: Improve TypeScript definitions to warn about invalid keys
 - fix: Correct the return type for the `plurals.js` functions
 - refactor: Move all translation logic to reusable top-level functions.  
