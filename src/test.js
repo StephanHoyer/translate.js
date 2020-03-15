@@ -56,6 +56,10 @@ o.spec('translate.js', () => {
     o(t('nonexistentkey')).equals('nonexistentkey')
   })
 
+  o('should return translationKey when subkey is not provided', () => {
+    o(t('translationWithSubkeys')).equals('translationWithSubkeys')
+  })
+
   o(
     'should return undefiend if no translation is found ' +
       'and useKeyForMissingTranslation-option is set to false',
