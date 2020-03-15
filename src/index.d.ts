@@ -4,50 +4,77 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.8
 
-type translateFunc1<T> = (key: string) => T;
-type translateFunc2<T> = (key: string, subKey: number | string) => T;
-type translateFunc3<T> = (key: string, params: object) => T;
-type translateFunc4<T> = (key: string, subKey: number | string, params: object) => T;
-type translateFunc5<T> = (key: string, params: object, subKey: number | string) => T;
+type translateFunc1<M extends object, T> = <K extends keyof M>(
+  key: M[K] extends string ? K : never
+) => T
+type translateFunc2<M extends object, T> = <K extends keyof M>(
+  key: K,
+  params: M[K] extends string ? object : never
+) => T
+type translateFunc3<M extends object, T> = <K extends keyof M>(
+  key: K,
+  subKey: M[K] extends object ? keyof M[K] : number,
+  params?: object
+) => T
+type translateFunc4<M extends object, T> = <K extends keyof M>(
+  key: K,
+  params: object,
+  subKey: M[K] extends object ? keyof M[K] : number
+) => T
 
-import { pluralizer } from './plurals';
+import { pluralizer } from './plurals'
 
 export interface Options {
-    debug?: boolean;
-    array?: boolean;
-    resolveAliases?: boolean;
-    pluralize?: pluralizer;
-    useKeyForMissingTranslation?: boolean;
+  debug?: boolean
+  array?: boolean
+  resolveAliases?: boolean
+  pluralize?: pluralizer
+  useKeyForMissingTranslation?: boolean
 }
 
 export interface ArrayOptions extends Options {
-    array: true;
+  array: true
 }
 
 export interface Messages {
-    [key: string]: string | Messages;
-    [key: number]: string | Messages;
+  [key: string]: string | Messages
+  [key: number]: string | Messages
 }
 
-export type Translate<T extends ArrayOptions | Options> = {
-    keys: Messages;
-    arr: translateFunc1<any[]> & translateFunc2<any[]> & translateFunc3<any[]> & translateFunc4<any[]> & translateFunc5<any[]>;
-    opts: T;
-}
-    & translateFunc1<T extends ArrayOptions ? any[] : string>
-    & translateFunc2<T extends ArrayOptions ? any[] : string>
-    & translateFunc3<T extends ArrayOptions ? any[] : string>
-    & translateFunc4<T extends ArrayOptions ? any[] : string>
-    & translateFunc5<T extends ArrayOptions ? any[] : string>;
+export type Translate<
+  M extends object,
+  T extends ArrayOptions | Options,
+  R = T extends ArrayOptions ? any[] : string
+> = {
+  keys: M
+  arr: translateFunc1<M, any[]> &
+    translateFunc2<M, any[]> &
+    translateFunc3<M, any[]> &
+    translateFunc4<M, any[]>
+  opts: T
+} & translateFunc1<M, R> &
+  translateFunc2<M, R> &
+  translateFunc3<M, R> &
+  translateFunc4<M, R>
 
-type translateJsFunc1 = (messages: Messages) => Translate<Options>;
-type translateJsFunc2 = (messages: Messages, options: ArrayOptions) => Translate<ArrayOptions>;
-type translateJsFunc3 = (messages: Messages, options: Options) => Translate<Options>;
+type translateJsFunc1 = <M extends Messages>(
+  messages: M
+) => Translate<M, Options>
+type translateJsFunc2 = <M extends Messages>(
+  messages: M,
+  options: ArrayOptions
+) => Translate<M, ArrayOptions>
+type translateJsFunc3 = <M extends Messages>(
+  messages: M,
+  options: Options
+) => Translate<M, Options>
 
 type translateJs = {
-    resolveAliases: (messages: Messages) => Messages;
-} & translateJsFunc1 & translateJsFunc2 & translateJsFunc3;
+  resolveAliases: <M extends Messages>(messages: M) => M
+} & translateJsFunc1 &
+  translateJsFunc2 &
+  translateJsFunc3
 
-declare const translate: translateJs;
+declare const translate: translateJs
 
-export default translate;
+export default translate

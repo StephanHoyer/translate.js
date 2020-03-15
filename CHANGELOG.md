@@ -3,6 +3,7 @@
 ## Upcoming...
 
 - <!-- Add features here -->
+- feat: Improve TypeScript definitions to warn about invalid keys
 - fix: Correct the return type for the `plurals.js` functions
 - refactor: Move all translation logic to reusable top-level functions.  
   This should make it much cheaper to instantiate hundreds of tiny translate.js
