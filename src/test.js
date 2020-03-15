@@ -57,6 +57,9 @@ o.spec('translate.js', () => {
   })
 
   o('should return translationKey when subkey is not provided', () => {
+    // this is technically a special case of the test
+    // "should treat any non-string translations as missing"
+    // below
     o(t('translationWithSubkeys')).equals('translationWithSubkeys')
   })
 
