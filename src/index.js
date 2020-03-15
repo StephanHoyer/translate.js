@@ -1,7 +1,7 @@
 const isObject = (obj) => obj && typeof obj === 'object'
 
-function assemble(parts, replacements, count, debug, asArray) {
-  let result = asArray ? parts.slice() : parts[0]
+function assemble(parts, replacements, count, opts) {
+  let result = opts.array ? parts.slice() : parts[0]
   const len = parts.length
   for (let i = 1; i < len; i += 2) {
     const part = parts[i]
@@ -10,12 +10,12 @@ function assemble(parts, replacements, count, debug, asArray) {
       if (part === 'n' && count != null) {
         val = count
       } else {
-        debug &&
+        opts.debug &&
           console.warn('No "' + part + '" in placeholder object:', replacements)
         val = '{' + part + '}'
       }
     }
-    if (asArray) {
+    if (opts.array) {
       result[i] = val
     } else {
       result += val + parts[i + 1]
@@ -24,118 +24,146 @@ function assemble(parts, replacements, count, debug, asArray) {
   return result
 }
 
+function getPluralValue(translation, count, plFunc) {
+  // Opinionated assumption: Pluralization rules are the same for negative and positive values.
+  // By normalizing all values to positive, pluralization functions become simpler, and less error-prone by accident.
+  let mappedCount = Math.abs(count)
+
+  mappedCount = plFunc ? plFunc(mappedCount) : mappedCount
+  if (translation[mappedCount] != null) {
+    return translation[mappedCount]
+  }
+  if (translation.n != null) {
+    return translation.n
+  }
+}
+
+function replacePlaceholders(
+  translation,
+  replacements,
+  count,
+  replCache,
+  opts
+) {
+  let result = replCache[translation]
+  if (result == null) {
+    const parts = translation
+      // turn both curly braces around tokens into the a unified
+      // (and now unique/safe) token `{x}` signifying boundry between
+      // replacement variables and static text.
+      .replace(/\{(\w+)\}/g, '{x}$1{x}')
+      // Adjacent placeholders will always have an empty string between them.
+      // The array will also always start with a static string (at least a '').
+      .split('{x}') // stupid but works™
+
+    // NOTE: parts no consists of alternating [text,replacement,text,replacement,text]
+    // Cache a function that loops over the parts array - unless there's only text
+    // (i.e. parts.length === 1) - then we simply cache the string.
+    result = parts.length > 1 ? parts : parts[0]
+    replCache[translation] = result
+  }
+  result = result.pop ? assemble(result, replacements, count, opts) : result
+  return result
+}
+
+function translate(
+  translationKey,
+  subKey,
+  replacements,
+  keys,
+  opts,
+  replCache
+) {
+  opts = opts || {}
+  let translation = keys[translationKey]
+  const translationIsObject = isObject(translation)
+  const complex = translationIsObject || subKey != null || replacements != null
+
+  if (complex) {
+    if (isObject(subKey)) {
+      const tmp = replacements
+      replacements = subKey
+      subKey = tmp
+    }
+    replacements = replacements || {}
+
+    if (translationIsObject) {
+      const propValue =
+        (subKey != null && translation[subKey]) || translation['*']
+      if (propValue != null) {
+        translation = propValue
+      } else if (typeof subKey === 'number') {
+        // get appropriate plural translation string
+        const plFunc = opts.pluralize
+        translation = getPluralValue(translation, subKey, plFunc)
+      }
+    }
+  }
+
+  if (typeof translation !== 'string') {
+    if (opts.useKeyForMissingTranslation === false) {
+      return
+    }
+    translation = translationKey
+    if (opts.debug) {
+      if (subKey != null) {
+        translation = '@@' + translationKey + '.' + subKey + '@@'
+        console.warn(
+          'No translation or pluralization form found for "' +
+            subKey +
+            '" in' +
+            translationKey
+        )
+      } else {
+        translation = '@@' + translation + '@@'
+        console.warn('Translation for "' + translationKey + '" not found.')
+      }
+    }
+  }
+
+  if (complex) {
+    return replacePlaceholders(
+      translation,
+      replacements,
+      subKey,
+      replCache,
+      opts
+    )
+  }
+  return translation
+}
+
+function translateToArray(...args) {
+  const opts = this.opts
+  const normalArrayOption = opts.array
+  opts.array = true
+  const result = this.apply(null, args)
+  opts.array = normalArrayOption
+  return result
+}
+
 function translatejs(messageObject, options) {
+  messageObject = messageObject || {}
   options = options || {}
+
   if (options.resolveAliases) {
     messageObject = translatejs.resolveAliases(messageObject)
-  }
-  const debug = options.debug
-  const useKeyForMissingTranslation =
-    options.useKeyForMissingTranslation !== false
-
-  function getPluralValue(translation, count) {
-    // Opinionated assumption: Pluralization rules are the same for negative and positive values.
-    // By normalizing all values to positive, pluralization functions become simpler, and less error-prone by accident.
-    let mappedCount = Math.abs(count)
-
-    const plFunc = (tFunc.opts || {}).pluralize
-    mappedCount = plFunc ? plFunc(mappedCount) : mappedCount
-    if (translation[mappedCount] != null) {
-      return translation[mappedCount]
-    }
-    if (translation.n != null) {
-      return translation.n
-    }
   }
 
   const replCache = {}
 
-  function replacePlaceholders(translation, replacements, count) {
-    let result = replCache[translation]
-    if (result == null) {
-      const parts = translation
-        // turn both curly braces around tokens into the a unified
-        // (and now unique/safe) token `{x}` signifying boundry between
-        // replacement variables and static text.
-        .replace(/\{(\w+)\}/g, '{x}$1{x}')
-        // Adjacent placeholders will always have an empty string between them.
-        // The array will also always start with a static string (at least a '').
-        .split('{x}') // stupid but works™
-
-      // NOTE: parts no consists of alternating [text,replacement,text,replacement,text]
-      // Cache a function that loops over the parts array - unless there's only text
-      // (i.e. parts.length === 1) - then we simply cache the string.
-      result = parts.length > 1 ? parts : parts[0]
-      replCache[translation] = result
-    }
-    result = result.pop
-      ? assemble(result, replacements, count, debug, tFunc.opts.array)
-      : result
-    return result
-  }
-
   function tFunc(translationKey, subKey, replacements) {
-    let translation = tFunc.keys[translationKey]
-    const translationIsObject = isObject(translation)
-    const complex =
-      translationIsObject || subKey != null || replacements != null
-
-    if (complex) {
-      if (isObject(subKey)) {
-        const tmp = replacements
-        replacements = subKey
-        subKey = tmp
-      }
-      replacements = replacements || {}
-
-      if (translationIsObject) {
-        const propValue =
-          (subKey != null && translation[subKey]) || translation['*']
-        if (propValue != null) {
-          translation = propValue
-        } else if (typeof subKey === 'number') {
-          // get appropriate plural translation string
-          translation = getPluralValue(translation, subKey)
-        }
-      }
-    }
-
-    if (typeof translation !== 'string') {
-      if (!useKeyForMissingTranslation) {
-        return
-      }
-      translation = translationKey
-      if (debug) {
-        if (subKey != null) {
-          translation = '@@' + translationKey + '.' + subKey + '@@'
-          console.warn(
-            'No translation or pluralization form found for "' +
-              subKey +
-              '" in' +
-              translationKey
-          )
-        } else {
-          translation = '@@' + translation + '@@'
-          console.warn('Translation for "' + translationKey + '" not found.')
-        }
-      }
-    }
-
-    if (complex) {
-      return replacePlaceholders(translation, replacements, subKey)
-    }
-    return translation
+    return translate(
+      translationKey,
+      subKey,
+      replacements,
+      tFunc.keys,
+      tFunc.opts,
+      replCache
+    )
   }
 
-  // Convenience function.
-  tFunc.arr = function arr(...args) {
-    const opts = tFunc.opts
-    const normalArrayOption = opts.array
-    opts.array = true
-    const result = tFunc.apply(null, args)
-    opts.array = normalArrayOption
-    return result
-  }
+  tFunc.arr = translateToArray // Convenience function.
 
   tFunc.keys = messageObject || {}
   tFunc.opts = options

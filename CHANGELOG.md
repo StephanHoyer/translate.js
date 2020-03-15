@@ -2,9 +2,10 @@
 
 ## Upcoming...
 
-<!-- Add features here -->
-
-- ...
+- <!-- Add features here -->
+- refactor: Move all translation logic to reusable top-level functions.  
+  This should make it much cheaper to instantiate hundreds of tiny translate.js
+  instances.
 
 ## 1.2.6
 
