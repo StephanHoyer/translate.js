@@ -9,6 +9,12 @@
   This should make it much cheaper to instantiate hundreds of tiny translate.js
   instances.
 
+## 1.2.7
+
+_2019-06-06_
+
+- fix: Don't translate differently in debug mode
+
 ## 1.2.6
 
 _2018-12-29_
