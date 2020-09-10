@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/StephanHoyer/translate.js.svg)](https://travis-ci.org/StephanHoyer/translate.js)
 [![rethink.js](https://img.shields.io/badge/rethink-js-yellow.svg)](https://github.com/rethinkjs/manifest)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
-![](http://img.badgesize.io/StephanHoyer/translate.js/master/src/index.js.svg?compression=brotli)
+![](https://badgen.net/bundlephobia/minzip/translate.js)
 
 # translate.js
 
