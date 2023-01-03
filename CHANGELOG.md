@@ -3,6 +3,7 @@
 ## Upcoming...
 
 - <!-- Add features here -->
+- feat: Add pluralizer functions for `ar`,`fi`,`fo`,`nb`,`no`,`pl`,`th`
 
 ## 1.3.0 – 1.3.2
 
