@@ -8,7 +8,7 @@
     "onchange": "6.1.0",
     "ospec": "^4.0.1",
     "prettier": "1.19.1",
-    "rollup": "2.0.6"
+    "rollup": "2.79.2"
   },
   "scripts": {
     "prepublishOnly": "npm run test",
