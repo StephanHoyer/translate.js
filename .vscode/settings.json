@@ -1,0 +1,30 @@
+{
+  "cSpell.words": [
+    "Baaahd",
+    "barss",
+    "bhasd",
+    "Engar",
+    "foos",
+    "Hitse",
+    "Hitses",
+    "kindur",
+    "Kurounin",
+    "mithril",
+    "musterknabe",
+    "namespacing",
+    "npmjs",
+    "pluralizer",
+    "rollup",
+    "subkey",
+    "subkeyed",
+    "subkeys",
+    "translatejs"
+  ],
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[markdown]": {},
+  "files.autoSave": "onFocusChange"
+}

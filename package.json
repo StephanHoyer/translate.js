@@ -3,8 +3,8 @@
   "version": "1.3.2",
   "description": "Javascript micro library for translations (i18n) with support for placeholders and multiple plural forms.",
   "devDependencies": {
-    "@rollup/plugin-buble": "0.21.1",
     "benchmark": "2.1.4",
+    "eslint": "9.37.0",
     "onchange": "6.1.0",
     "ospec": "^4.0.1",
     "prettier": "1.19.1",

@@ -18,28 +18,28 @@ npm install translate.js
 
 ```JavaScript
 import translate from 'translate.js'
-// var translate = require('translate.js')
+// const  translate = require('translate.js')
 
-var messages = {
+const  messages = {
     translationKey: 'Translation value'
 }
 
-var options = {
+const  options = {
     // These are the defaults:
-    debug: false,  //[Boolean]: Logs missing translations to console and add "@@" around output, if `true`.
+    debug: false,  //[Boolean]: Logs missing translations to console and add '@@' around output, if `true`.
     array: false,  //[Boolean]: Returns translations with placeholder-replacements as Arrays, if `true`.
     resolveAliases: false,  //[Boolean]: Parses all translations for aliases and replaces them, if `true`.
     pluralize: function(n){ return Math.abs(n) },  //[Function(count)]: Provides a custom pluralization mapping function, should return a string (or number)
-    useKeyForMissingTranslation: true //[Boolean]: If there is no translation found for given key, the key is used as translation, when set to false, it returns undefiend in this case
+    useKeyForMissingTranslation: true //[Boolean]: If there is no translation found for given key, the key is used as translation, when set to false, it returns undefined in this case
 }
 
-var t = translate(messages, [options])
+const  t = translate(messages, [options])
 
 t('translationKey')
 t('translationKey', subkey)
-t('translationKey', {replaceKey: 'replacevalue'})
-t('translationKey', subkey, {replaceKey: 'replacevalue'})
-t('translationKey', {replaceKey: 'replacevalue'}, subkey)
+t('translationKey', {replaceKey: 'replaceValue'})
+t('translationKey', subkey, {replaceKey: 'replaceValue'})
+t('translationKey', {replaceKey: 'replaceValue'}, subkey)
 ```
 
 ## Example:
@@ -47,7 +47,7 @@ t('translationKey', {replaceKey: 'replacevalue'}, subkey)
 First create a language specific object for your translations:
 
 ```JavaScript
-var messages = {
+const  messages = {
     like: 'I like this.',
     likeThing: 'I like {thing}!',
     likeTwoThings: 'I like {0} and {1}!',
@@ -84,7 +84,7 @@ var messages = {
         '*': 'Default value',
     },
 
-    'Prosa Key': 'This is prosa!',
+    'Prose Key': 'This is prose!',
 
 }
 ```
@@ -93,8 +93,8 @@ Then bind the translation function to something short:
 
 ```JavaScript
 import translate from 'translate.js'
-// var translate = require('translate.js')
-var t = translate(messages)
+// const  translate = require('translate.js')
+const  t = translate(messages)
 ```
 
 And use it like this:
@@ -102,7 +102,7 @@ And use it like this:
 ```JavaScript
 //simple
 t('like') === 'I like this.'
-t('Prosa Key') === 'This is prosa!'
+t('Prose Key') === 'This is prose!'
 
 //placeholders - named
 t('likeThing', {thing: 'the Sun'}) === 'I like the Sun!'
@@ -152,7 +152,7 @@ t('like') === 'like' // (No longer translated)
 Immutability can be achieved with a simple wrapper:
 
 ```js
-var t2 = function() {
+const t2 = function() {
   return t.apply(null, arguments)
 }
 ```
@@ -162,7 +162,7 @@ var t2 = function() {
 You can also do customized pluralization selection, like this:
 
 ```js
-var messages_IS = {
+const messages_IS = {
   sheep: {
     0: 'Engar kindur',
     s: '{n} kind',
@@ -170,11 +170,11 @@ var messages_IS = {
     13: 'Baaahd luck!',
   },
 }
-var pluralize_IS = function(n) {
+const pluralize_IS = function(n) {
   // Icelandic rules: Numbers ending in 1 are singular - unless ending in 11.
   return n % 10 !== 1 || n % 100 === 11 ? 'p' : 's'
 }
-var t = translate(messages_IS, {
+const t = translate(messages_IS, {
   pluralize: pluralize_IS,
 })
 ```
@@ -196,9 +196,9 @@ Translate.js comes with a predefined `pluralize` functions for
 needed, like so:
 
 ```js
-var { plural_IS } = require('translate.js/pluralize') // cjs
+const { plural_IS } = require('translate.js/pluralize') // cjs
 // import { plural_IS } from 'translate.js/plurals' // es6
-var t = translate(messages_IS, {
+const t = translate(messages_IS, {
   pluralize: plural_IS,
 })
 ```
@@ -212,16 +212,16 @@ Sometimes it's useful to have aliases for certain translations or to even
 reference translations inside other ones. This is possible with the
 `translate.resolveAliases(translationsObj)` function which returns a new
 translations object with all instances of `{{aliasedTranslationKey}}` in
-translation strings replaced with the corrsponding translation value:
+translation strings replaced with the corresponding translation value:
 
 ```js
-var messages = translate.resolveAliases({
+const messages = translate.resolveAliases({
   supportButton: 'Support Chat',
   supportDirections: 'Please use the {{supportButton}}',
   faq_supportChat:
     '...and then click the "{{supportButton}}" button below the text "{{supportDirections}}".',
 })
-var t = translate(messages)
+const t = translate(messages)
 
 t('faq_supportChat')
 // => '...and then click the "Support Chat" button below the text "Please use the Support Chat".'
@@ -233,13 +233,13 @@ Subkeys can be aliased by using a `{{key[subkey]}}` syntax, and such lookups
 behave much the same as normal subkey lookups do.
 
 ```js
-var messages = translate.resolveAliases({
+const messages = translate.resolveAliases({
   button1: { label: 'Save', tooltip: 'Save Changes' },
   button2: 'Cancel',
   text1: 'Click the "{{button1[label]}}" button when done.',
   text2: 'Click the "{{button2[label]}}" button to exit.',
 })
-var t = translate(messages)
+const t = translate(messages)
 
 t('text1') === 'Click the "Save" button when done.'
 t('text2') === 'Click the "Cancel" button to exit.'
@@ -249,7 +249,7 @@ This also works with pluralized translations. Nothing is done automatically
 though. You have to define the counts explicitly.
 
 ```js
-var messages = translate.resolveAliases({
+const messages = translate.resolveAliases({
   thing: {
     1: 'one thing',
     n: '{n} things',
@@ -259,17 +259,17 @@ var messages = translate.resolveAliases({
     n: 'other {{thing[n]}}',
   },
 })
-var t = translate(messages)
+const t = translate(messages)
 
 t('other', 2) === 'other 2 things'
 ```
 
 **Note:** You can set an options flag to do this automatically during
-initializisation. (This one-time operation causes no additional overhead during
+initialization. (This one-time operation causes no additional overhead during
 runtime.)
 
 ```js
-var t = translate(messages, {
+const t = translate(messages, {
   resolveAliases: true,
 })
 ```
@@ -282,8 +282,8 @@ using the `arr`-helper. It does not convert the translation result to a string
 but rather returns an array with all the placeholder-replacements left intact.
 
 ```js
-var keys = { test: 'abc {fancyImage} def' }
-var t = translate(keys)
+const keys = { test: 'abc {fancyImage} def' }
+const t = translate(keys)
 
 t.arr('test', {
   fancyImage: m('img', { src: 'image.jpg' }),
@@ -291,7 +291,7 @@ t.arr('test', {
 // results in ['abc ', { tag: 'img', ... }, ' def']
 ```
 
-You can also set this as the default behaviour, by supplying `array:true` option
+You can also set this as the default behavior, by supplying `array:true` option
 when initializing the translation function.
 
 ```js

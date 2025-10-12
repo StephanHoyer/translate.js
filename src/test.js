@@ -1,8 +1,7 @@
-'use strict'
 /* global require */
 
-const o = require('ospec')
-const translate = require('../') // test the built/transpiled module
+import o from 'ospec'
+import translate from './index.js'
 
 o.spec('translate.js', () => {
   const translationsObject = {
@@ -20,7 +19,7 @@ o.spec('translate.js', () => {
       0: 'Engar kindur',
       s: '{n} kind', // some languages use singular for any number that ends with 1 (i.e. 101, 21, 31, 51)
       p: '{n} kindur',
-      13: 'Baaahd luck!', // Aribtrary translation outside of pluralization rules
+      13: 'Baaahd luck!', // Arbitrary translation outside of pluralization rules
     },
     horses: {
       n: 'Pluralization keys are missing', // default fallback
@@ -43,7 +42,7 @@ o.spec('translate.js', () => {
       n: 'Is always overridden by "*"',
     },
 
-    'Prosa Key': 'This is prosa!',
+    'Prose Key': 'This is prose!',
 
     comboCounter: '{name} is {n} years old.',
     translationWithSubkeys: { foo: 'FOO' },
@@ -53,7 +52,7 @@ o.spec('translate.js', () => {
   const t = translate(translationsObject)
 
   o('should return translationKey if no translation is found', () => {
-    o(t('nonexistentkey')).equals('nonexistentkey')
+    o(t('nonExistingKey')).equals('nonExistingKey')
   })
 
   o('should return translationKey when subkey is not provided', () => {
@@ -64,11 +63,11 @@ o.spec('translate.js', () => {
   })
 
   o(
-    'should return undefiend if no translation is found ' +
+    'should return undefined if no translation is found ' +
       'and useKeyForMissingTranslation-option is set to false',
     () => {
       const t1 = translate({}, { useKeyForMissingTranslation: false })
-      o(t1('nonexistentkey')).equals(undefined)
+      o(t1('nonExistingKey')).equals(undefined)
     }
   )
 
@@ -76,8 +75,8 @@ o.spec('translate.js', () => {
     o(t('plain')).equals('I like this.')
   })
 
-  o('should return a translated string for prosa keys', () => {
-    o(t('Prosa Key')).equals('This is prosa!')
+  o('should return a translated string for prose keys', () => {
+    o(t('Prose Key')).equals('This is prose!')
   })
 
   o('should return a translated string and replace a placeholder ', () => {
@@ -173,7 +172,7 @@ o.spec('translate.js', () => {
     o('n' in placeholders).equals(false)
   })
 
-  const nonstringtranslations = {
+  const nonStringTranslations = {
     foo: 10,
     bar: [],
     baz: {},
@@ -181,7 +180,7 @@ o.spec('translate.js', () => {
     ooh: true,
     happensToBeString: 'OK',
   }
-  const t0 = translate(nonstringtranslations)
+  const t0 = translate(nonStringTranslations)
   o('should treat any non-string translations as missing', () => {
     o(t0('foo')).equals('foo')
     o(t0('bar')).equals('bar')
@@ -192,10 +191,8 @@ o.spec('translate.js', () => {
   })
 
   // custom isPlural function
-  const pluralize_IS = function(n) {
-    // Icelandic rules: Numbers ending in 1 are singular - unless ending in 11.
-    return n % 10 !== 1 || n % 100 === 11 ? 'p' : 's'
-  }
+  // Icelandic rules: Numbers ending in 1 are singular - unless ending in 11.
+  const pluralize_IS = (n) => (n % 10 !== 1 || n % 100 === 11 ? 'p' : 's')
   const t3b = translate(translationsObject, { pluralize: pluralize_IS })
   o('should pluralize (0) correctly in Icelandic', () => {
     o(t3b('icelandicSheep', 0)).equals('Engar kindur')
@@ -243,19 +240,19 @@ o.spec('translate.js', () => {
 
   o('should ignore count/subkey if translation is a plain string', () => {
     o(t3b('plain', 666)).equals('I like this.')
-    o(t3b('plain', 'nonexistentsubkey')).equals('I like this.')
+    o(t3b('plain', 'nonExistingSubkey')).equals('I like this.')
   })
   o(
     'should ignore replacements object if translation is a plain string',
     () => {
-      o(t3b('plain', { nonexistentreplacement: 'foo' })).equals('I like this.')
+      o(t3b('plain', { nonExistingReplacement: 'foo' })).equals('I like this.')
     }
   )
   o('should return the "*" subkey value if no subkey is passed', () => {
     o(t3b('translationWithDefaultSubkey')).equals('I am a default value')
   })
   o('should retry the "*" subkey value if passed subkey is missing', () => {
-    o(t3b('translationWithDefaultSubkey', 'nonexistentsubkey')).equals(
+    o(t3b('translationWithDefaultSubkey', 'nonExistingSubkey')).equals(
       'I am a default value'
     )
     o(t3b('date', 13, { day: '13', year: 2013 })).equals('WAT! 13!?')
@@ -265,7 +262,7 @@ o.spec('translate.js', () => {
   const t4 = translate(translationsObject, 'asd')
   o(
     'should return a translated string with the correct plural form and ' +
-      'replaced placeholders: t(key, count, replacements) [wrong optio arg]',
+      'replaced placeholders: t(key, count, replacements) [wrong option arg]',
     () => {
       o(t4('date', 2, { day: '13', year: 2014 })).equals('13. February 2014')
     }
@@ -277,14 +274,14 @@ o.spec('translate.js', () => {
     'should return @@translationKey@@/@@translationKey.subKey@@ if no translation ' +
       'is found and debug is true',
     () => {
-      o(t5('nonexistentkey')).equals('@@nonexistentkey@@')
+      o(t5('nonExistingKey')).equals('@@nonExistingKey@@')
       o(t5('translationWithSubkeys', 'not there')).equals(
         '@@translationWithSubkeys.not there@@'
       )
       o(t5('translationWithSubkeys', 42)).equals(
         '@@translationWithSubkeys.42@@'
       )
-      o(t5('nonexistentkey', 42)).equals('@@nonexistentkey.42@@')
+      o(t5('nonExistingKey', 42)).equals('@@nonExistingKey.42@@')
     }
   )
 
@@ -327,7 +324,7 @@ o.spec('translate.js', () => {
     o(tX('x', 1)).equals('x')
   })
 
-  o('should gracefully handle nully (not falsey) parameters', () => {
+  o('should gracefully handle nullish (not falsy) parameters', () => {
     tX = translate(undefined, null)
     o(tX('name')).equals('name')
     o(tX('x', 1)).equals('x')
@@ -352,17 +349,13 @@ o.spec('translate.js', () => {
   })
 
   o('should allow late binding of pluralization', () => {
-    tX.opts.pluralize = function(n) {
-      return 99
-    }
+    tX.opts.pluralize = () => 99
     o(tX('x', 1)).equals('Ninety-nine')
   })
 
   o('should gracefully handle completely overloading the opts', () => {
     tX.opts = {
-      pluralize: function(n) {
-        return 13
-      },
+      pluralize: () => 13,
     }
     o(tX('x', 1)).equals('Thirteen')
   })
@@ -390,9 +383,7 @@ o.spec('Return array option', () => {
   o(
     'should return replacement-token translations as Arrays, when t.arr() is called',
     () => {
-      const t = translate({
-        test: 'abc {xyz} def',
-      })
+      const t = translate({ test: 'abc {xyz} def' })
       o(t.arr('test', { xyz: { foo: 'bar' } })).deepEquals([
         'abc ',
         { foo: 'bar' },
@@ -403,12 +394,7 @@ o.spec('Return array option', () => {
   o(
     'should return replacement-token translations as Arrays, when `array` option is supplied',
     () => {
-      const t = translate(
-        {
-          test: 'abc {xyz} def',
-        },
-        { array: true }
-      )
+      const t = translate({ test: 'abc {xyz} def' }, { array: true })
       o(t('test', { xyz: { foo: 'bar' } })).deepEquals([
         'abc ',
         { foo: 'bar' },
@@ -499,7 +485,7 @@ o.spec('alias usage', () => {
       D: 'DABABCACD',
     })
   })
-  o('should work within pluralizations', () => {
+  o('should work within pluralization', () => {
     o(
       translate.resolveAliases({
         A: 'bar',
@@ -560,7 +546,7 @@ o.spec('alias usage', () => {
       })
     ).throws("You can't alias objects")
   })
-  o('should allow targetting subkeys', () => {
+  o('should allow targeting subkeys', () => {
     o(
       translate.resolveAliases({
         A: { b: 'bar' },
@@ -606,7 +592,7 @@ o.spec('alias usage', () => {
       })
     }
   )
-  o("should throw when targetted subkeys don't exist", () => {
+  o("should throw when targeted subkeys don't exist", () => {
     o(() =>
       translate.resolveAliases({
         A: { b: 'bar' },
@@ -634,14 +620,14 @@ o.spec('alias usage', () => {
       })
     ).throws('Circular reference for "B[b]" detected')
   })
-  o('should not auto-resolve aliases when optionsflag is not set', () => {
+  o('should not auto-resolve aliases when options flag is not set', () => {
     const t = translate({
       A: 'bar',
       B: 'foo {{A}} bar',
     })
     o(t('B')).equals('foo {{A}} bar')
   })
-  o('should auto-resolve aliases when optionsflag is set', () => {
+  o('should auto-resolve aliases when options flag is set', () => {
     const t = translate(
       {
         A: 'bar',
