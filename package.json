@@ -17,7 +17,8 @@
     "_test": "node_modules/.bin/ospec src/test.js",
     "test": "npm run format && npm run build && npm run _test",
     "format": "prettier rollup.config.js src/*.js pluralize/*.js *.md --write",
-    "dev": "onchange './src/*.js' -- npm run test"
+    "dev": "onchange './src/*.js' -- npm run test",
+    "bench": "node benchmark.js"
   },
   "repository": {
     "type": "git",

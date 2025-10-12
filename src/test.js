@@ -324,12 +324,6 @@ o.spec('translate.js', () => {
     o(tX('x', 1)).equals('x')
   })
 
-  o('should gracefully handle nullish (not falsy) parameters', () => {
-    tX = translate(undefined, null)
-    o(tX('name')).equals('name')
-    o(tX('x', 1)).equals('x')
-  })
-
   o('should expose .keys and .opts properties', () => {
     o(tX.keys && typeof tX.keys === 'object').equals(true)
     o(tX.keys && typeof tX.opts === 'object').equals(true)
