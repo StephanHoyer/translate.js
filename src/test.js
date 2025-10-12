@@ -192,7 +192,7 @@ o.spec('translate.js', () => {
 
   // custom isPlural function
   // Icelandic rules: Numbers ending in 1 are singular - unless ending in 11.
-  const pluralize_IS = (n) => (n % 10 !== 1 || n % 100 === 11 ? 'p' : 's')
+  const pluralize_IS = n => (n % 10 !== 1 || n % 100 === 11 ? 'p' : 's')
   const t3b = translate(translationsObject, { pluralize: pluralize_IS })
   o('should pluralize (0) correctly in Icelandic', () => {
     o(t3b('icelandicSheep', 0)).equals('Engar kindur')
