@@ -163,6 +163,23 @@ o.spec('translate.js', () => {
     }
   )
 
+  o(
+    'should format replacement values if formatReplacement option is set',
+    () => {
+      const t2 = translate(translationsObject, {
+        formatReplacement: v => `%%${v}%%`,
+      })
+      o(t2('like', { thing: 'Sun' })).equals('I like %%Sun%%!')
+      o(t2('simpleCounter', 25)).equals('The count is %%25%%.')
+      o(t2('date', { day: '13', year: 2014 }, 2)).equals(
+        '%%13%%. February %%2014%%'
+      )
+      o(t2('date', 2, { day: '13', year: 2014 })).equals(
+        '%%13%%. February %%2014%%'
+      )
+    }
+  )
+
   const placeholders = { name: 'Alice' }
   o('should handle combination of count and named placeholders', () => {
     o(t('comboCounter', 10, placeholders)).equals('Alice is 10 years old.')

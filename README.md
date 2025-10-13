@@ -302,3 +302,9 @@ t('test', {
 })
 // results in ['abc ', { tag: 'img', ... }, ' def']
 ```
+
+## Formatting replacements
+
+There is an option `formatReplacement` which is called for every replacement,
+the result is then used as the token to insert. This is useful to e. g. escape
+HTML-entities to reduce XSS-vectors.

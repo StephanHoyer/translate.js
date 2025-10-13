@@ -6,7 +6,12 @@ const PLACEHOLDER_RE = /\{([^{}]+)\}/g
 const ALIAS_RE = /{{(.*?)}}/g
 const ALIAS_INDEX_RE = /^(.+)\[(.+)\]$/
 
-function assemble(parts, replacements, count, { array, debug } = {}) {
+function assemble(
+  parts,
+  replacements,
+  count,
+  { array, debug, formatReplacement } = {}
+) {
   let result = array ? parts.slice() : parts[0]
   const len = parts.length
   for (let i = 1; i < len; i += 2) {
@@ -20,8 +25,8 @@ function assemble(parts, replacements, count, { array, debug } = {}) {
         val = `{${part}}`
       }
     }
-    if (array) result[i] = val
-    else result += val + parts[i + 1]
+    if (array) result[i] = formatReplacement(val)
+    else result += formatReplacement(val) + parts[i + 1]
   }
   return result
 }
@@ -39,7 +44,7 @@ function replacePlaceholders(
   replacements,
   count,
   replCache,
-  { array, debug } = {}
+  { array, debug, formatReplacement } = {}
 ) {
   let result = replCache.get(translation)
   if (result == null) {
@@ -62,6 +67,7 @@ function replacePlaceholders(
     ? assemble(result, replacements, count, {
         array,
         debug,
+        formatReplacement,
       })
     : result
 }
@@ -76,6 +82,7 @@ function translate(
     array = false,
     pluralize = identity,
     debug = false,
+    formatReplacement = identity,
   } = {},
   replCache
 ) {
@@ -84,12 +91,8 @@ function translate(
   const complex = translationIsObject || subKey != null || replacements != null
 
   if (complex) {
-    if (isObject(subKey)) {
-      const tmp = replacements
-      replacements = subKey
-      subKey = tmp
-    }
-    replacements = replacements || {}
+    if (isObject(subKey)) [replacements, subKey] = [subKey, replacements]
+    replacements ??= replacements || {}
 
     if (translationIsObject) {
       const propValue =
@@ -121,6 +124,7 @@ function translate(
   if (complex) {
     return replacePlaceholders(translation, replacements, subKey, replCache, {
       array,
+      formatReplacement,
     })
   }
   return translation
