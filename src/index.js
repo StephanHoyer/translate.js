@@ -1,41 +1,42 @@
-const isObject = (obj) => obj && typeof obj === 'object'
+const isObject = v => v != null && typeof v === 'object'
 
-function assemble(parts, replacements, count, opts) {
-  let result = opts.array ? parts.slice() : parts[0]
+const identity = v => v
+
+const PLACEHOLDER_RE = /\{([^{}]+)\}/g
+const ALIAS_RE = /{{(.*?)}}/g
+const ALIAS_INDEX_RE = /^(.+)\[(.+)\]$/
+
+function assemble(
+  parts,
+  replacements,
+  count,
+  { array, debug, formatReplacement } = {}
+) {
+  let result = array ? parts.slice() : parts[0]
   const len = parts.length
   for (let i = 1; i < len; i += 2) {
     const part = parts[i]
     let val = replacements[part]
     if (val == null) {
-      if (part === 'n' && count != null) {
-        val = count
-      } else {
-        opts.debug &&
-          console.warn('No "' + part + '" in placeholder object:', replacements)
-        val = '{' + part + '}'
+      if (part === 'n' && count != null) val = count
+      else {
+        debug &&
+          console.warn(`No "${part}" in placeholder object:`, replacements)
+        val = `{${part}}`
       }
     }
-    if (opts.array) {
-      result[i] = val
-    } else {
-      result += val + parts[i + 1]
-    }
+    if (array) result[i] = formatReplacement(val)
+    else result += formatReplacement(val) + parts[i + 1]
   }
   return result
 }
 
-function getPluralValue(translation, count, plFunc) {
+function getPluralValue(translation, count, pluralize) {
   // Opinionated assumption: Pluralization rules are the same for negative and positive values.
   // By normalizing all values to positive, pluralization functions become simpler, and less error-prone by accident.
-  let mappedCount = Math.abs(count)
-
-  mappedCount = plFunc ? plFunc(mappedCount) : mappedCount
-  if (translation[mappedCount] != null) {
-    return translation[mappedCount]
-  }
-  if (translation.n != null) {
-    return translation.n
-  }
+  const mappedCount = pluralize(Math.abs(count))
+  if (translation[mappedCount] != null) return translation[mappedCount]
+  if (translation.n != null) return translation.n
 }
 
 function replacePlaceholders(
@@ -43,15 +44,15 @@ function replacePlaceholders(
   replacements,
   count,
   replCache,
-  opts
+  { array, debug, formatReplacement } = {}
 ) {
-  let result = replCache[translation]
+  let result = replCache.get(translation)
   if (result == null) {
     const parts = translation
       // turn both curly braces around tokens into the a unified
-      // (and now unique/safe) token `{x}` signifying boundry between
+      // (and now unique/safe) token `{x}` signifying boundary between
       // replacement variables and static text.
-      .replace(/\{(\w+)\}/g, '{x}$1{x}')
+      .replace(PLACEHOLDER_RE, '{x}$1{x}')
       // Adjacent placeholders will always have an empty string between them.
       // The array will also always start with a static string (at least a '').
       .split('{x}') // stupid but works™
@@ -60,10 +61,15 @@ function replacePlaceholders(
     // Cache a function that loops over the parts array - unless there's only text
     // (i.e. parts.length === 1) - then we simply cache the string.
     result = parts.length > 1 ? parts : parts[0]
-    replCache[translation] = result
+    replCache.set(translation, result)
   }
-  result = result.pop ? assemble(result, replacements, count, opts) : result
-  return result
+  return Array.isArray(result)
+    ? assemble(result, replacements, count, {
+        array,
+        debug,
+        formatReplacement,
+      })
+    : result
 }
 
 function translate(
@@ -71,86 +77,62 @@ function translate(
   subKey,
   replacements,
   keys,
-  opts,
+  {
+    useKeyForMissingTranslation = true,
+    array = false,
+    pluralize = identity,
+    debug = false,
+    formatReplacement = identity,
+  } = {},
   replCache
 ) {
-  opts = opts || {}
   let translation = keys[translationKey]
   const translationIsObject = isObject(translation)
   const complex = translationIsObject || subKey != null || replacements != null
 
   if (complex) {
-    if (isObject(subKey)) {
-      const tmp = replacements
-      replacements = subKey
-      subKey = tmp
-    }
-    replacements = replacements || {}
+    if (isObject(subKey)) [replacements, subKey] = [subKey, replacements]
+    replacements ??= replacements || {}
 
     if (translationIsObject) {
       const propValue =
         (subKey != null && translation[subKey]) || translation['*']
-      if (propValue != null) {
-        translation = propValue
-      } else if (typeof subKey === 'number') {
+      if (propValue != null) translation = propValue
+      else if (typeof subKey === 'number') {
         // get appropriate plural translation string
-        const plFunc = opts.pluralize
-        translation = getPluralValue(translation, subKey, plFunc)
+        translation = getPluralValue(translation, subKey, pluralize)
       }
     }
   }
 
   if (typeof translation !== 'string') {
-    if (opts.useKeyForMissingTranslation === false) {
-      return
-    }
+    if (!useKeyForMissingTranslation) return
     translation = translationKey
-    if (opts.debug) {
+    if (debug) {
       if (subKey != null) {
-        translation = '@@' + translationKey + '.' + subKey + '@@'
+        translation = `@@${translationKey}.${subKey}@@`
         console.warn(
-          'No translation or pluralization form found for "' +
-            subKey +
-            '" in' +
-            translationKey
+          `No translation or pluralization form found for "${subKey}" in ${translationKey}`
         )
       } else {
-        translation = '@@' + translation + '@@'
-        console.warn('Translation for "' + translationKey + '" not found.')
+        translation = `@@${translation}@@`
+        console.warn(`Translation for "${translationKey}" not found.`)
       }
     }
   }
 
   if (complex) {
-    return replacePlaceholders(
-      translation,
-      replacements,
-      subKey,
-      replCache,
-      opts
-    )
+    return replacePlaceholders(translation, replacements, subKey, replCache, {
+      array,
+      formatReplacement,
+    })
   }
   return translation
 }
 
-function translateToArray(...args) {
-  const opts = this.opts
-  const normalArrayOption = opts.array
-  opts.array = true
-  const result = this.apply(null, args)
-  opts.array = normalArrayOption
-  return result
-}
-
-function translatejs(messageObject, options) {
-  messageObject = messageObject || {}
-  options = options || {}
-
-  if (options.resolveAliases) {
-    messageObject = translatejs.resolveAliases(messageObject)
-  }
-
-  const replCache = {}
+function translatejs(messageObject = {}, { resolveAliases, ...options } = {}) {
+  if (resolveAliases) messageObject = translatejs.resolveAliases(messageObject)
+  const replCache = new Map()
 
   function tFunc(translationKey, subKey, replacements) {
     return translate(
@@ -163,7 +145,15 @@ function translatejs(messageObject, options) {
     )
   }
 
-  tFunc.arr = translateToArray // Convenience function.
+  tFunc.arr = (translationKey, subKey, replacements) =>
+    translate(
+      translationKey,
+      subKey,
+      replacements,
+      tFunc.keys,
+      { ...tFunc.opts, array: true },
+      replCache
+    )
 
   tFunc.keys = messageObject || {}
   tFunc.opts = options
@@ -179,40 +169,38 @@ function mapValues(obj, fn) {
 }
 
 translatejs.resolveAliases = function resolveAliases(translations) {
-  const keysInProcess = {}
-  function resolveAliases(translation) {
-    if (isObject(translation)) {
-      return mapValues(translation, resolveAliases)
-    }
-    return translation.replace(/{{(.*?)}}/g, (_, token) => {
-      if (keysInProcess[token]) {
-        throw new Error('Circular reference for "' + token + '" detected')
+  const inProcess = new Set()
+
+  function walk(translation) {
+    if (isObject(translation)) return mapValues(translation, walk)
+    return translation.replace(ALIAS_RE, (_, token) => {
+      if (inProcess.has(token)) {
+        throw new Error(`Circular reference for "${token}" detected`)
       }
-      keysInProcess[token] = true
-      let key = token
-      let subKey = ''
-      const keyParts = token.match(/^(.+)\[(.+)\]$/)
-      if (keyParts) {
-        key = keyParts[1]
-        subKey = keyParts[2]
+      inProcess.add(token)
+
+      let key = token,
+        subKey = ''
+      const m = ALIAS_INDEX_RE.exec(token)
+      if (m) {
+        key = m[1]
+        subKey = m[2]
       }
+
       let target = translations[key]
       if (isObject(target)) {
-        if (subKey) {
-          target = target[subKey]
-        } else {
-          throw new Error("You can't alias objects")
-        }
+        if (subKey) target = target[subKey]
+        else throw new Error("You can't alias objects")
       }
-      if (target == null) {
-        throw new Error('No translation for alias "' + token + '"')
-      }
-      const translation = resolveAliases(target)
-      keysInProcess[token] = false
-      return translation
+      if (target == null) throw new Error(`No translation for alias "${token}"`)
+
+      const resolved = walk(target)
+      inProcess.delete(token)
+      return resolved
     })
   }
-  return resolveAliases(translations)
+
+  return walk(translations)
 }
 
 export default translatejs
